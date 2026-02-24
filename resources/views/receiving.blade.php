@@ -89,9 +89,12 @@
 
         </form>
     </div>
-    <script src="{{ asset('js/receiving.js') }}"></script>
+    <!-- <script src="{{ asset('js/receiving.js') }}" defer></script> -->
+    <script src="//{{ request()->getHost() }}/js/receiving.js" defer></script>
     <script>
-        initDB().then(() => {
+        // Wait for receiving.js to load before calling initDB
+        window.addEventListener('DOMContentLoaded', () => {
+            initDB().then(() => {
             document.getElementById("receivingForm").addEventListener("submit", e => {
                 e.preventDefault();
                 const form = e.target;
@@ -105,12 +108,14 @@
                     vehicle_number: form.vehicle_number.value,
                     lot_no: form.lot_no.value,
                     remarks: form.remarks.value,
-                    operator_id: parseInt(form.operator_id.value)
+                    operator_id: parseInt(form.operator_id.value),
+                    queued_at: new Date().toISOString()
                 });
                 form.reset();
                 syncData(); // try sync immediately if online
             });
         });
+    });
     </script>
 </body>
 </html>
