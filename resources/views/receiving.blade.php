@@ -109,7 +109,7 @@
                     lot_no: form.lot_no.value,
                     remarks: form.remarks.value,
                     operator_id: parseInt(form.operator_id.value),
-                    queued_at: new Date().toISOString()
+                    created_at: new Date().toISOString()
                 });
                 form.reset();
                 syncData(); // try sync immediately if online

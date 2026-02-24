@@ -53,7 +53,7 @@ async function syncData() {
     const request = readStore.getAll();
 
     request.onsuccess = async () => {
-        const items = request.result;
+        const items = request.result.sort((a, b) => new Date(a.payload.created_at) - new Date(b.payload.created_at));
 
         for (const item of items) {
             try {
@@ -78,33 +78,7 @@ async function syncData() {
     };
 }
 
-// async function syncData() {
-//     if (!navigator.onLine) return;
-//     const tx = db.transaction("sync_queue", "readwrite");
-//     const store = tx.objectStore("sync_queue");
-//     const request = store.getAll();
 
-//     request.onsuccess = async () => {
-//         for (const item of request.result) {
-//             try {
-//                 const res = await fetch(item.api, {
-//                     method: item.method,
-//                     headers: { "Content-Type": "application/json" },
-//                     body: JSON.stringify(item.payload)
-//                 });
-//                 if (!res.ok) throw new Error("Server error");
-
-//                 // Remove from queue if synced
-//                 store.delete(item.id);
-//                 markAsSynced(item.id);
-
-//             } catch (err) {
-//                 item.retry_count++;
-//                 store.put(item); // keep in queue to retry later
-//             }
-//         }
-//     };
-// }
 
 
 // Mark record as synced in UI
