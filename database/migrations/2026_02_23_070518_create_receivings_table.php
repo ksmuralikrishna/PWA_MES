@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('lot_no')->unique();
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('operator_id');
-            $table->enum('status', ['pending', 'synced'])->default('pending');
+            $table->enum('status', ['pending', 'synced'])->default('synced');
             $table->timestamps();
         });
     }
