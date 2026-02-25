@@ -1,8 +1,11 @@
 const CACHE_NAME = 'mes-cache-v2';
 
 const APP_SHELL = [
+    '/',
+    '/index.html',
     '/offline.html',
     '/js/receiving.js',
+    '/js/acid_testing.js',
     '/manifest.json'
 ];
 
@@ -23,22 +26,14 @@ self.addEventListener('activate', event => {
 
 // Fetch logic
 self.addEventListener('fetch', event => {
-    const { request } = event;
-
-    // HTML navigation requests
-    if (request.mode === 'navigate') {
+    if (event.request.mode === 'navigate') {
         event.respondWith(
-            fetch(request).catch(() => {
-                return caches.match('/offline.html');
-            })
+            fetch(event.request).catch(() => caches.match('/index.html'))
         );
         return;
     }
 
-    // Other assets
     event.respondWith(
-        caches.match(request).then(response => {
-            return response || fetch(request);
-        })
+        caches.match(event.request).then(r => r || fetch(event.request))
     );
 });
