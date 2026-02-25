@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receiving Entry</title>
+    <!-- <link rel="manifest" href="{{ asset('manifest.json') }}"> -->
     <link rel="manifest" href="//{{ request()->getHost() }}/manifest.json">
-    <link rel="stylesheet" href="{{ asset('css/form-entry.css') }}">
+    <link rel="manifest" href="//{{ request()->getHost() }}/css/form-entry.css">
+    <!-- <link rel="stylesheet" href="{{ asset('css/form-entry.css') }}"> -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -90,6 +92,7 @@
                 </div>
 
                 <button type="submit" class="submit-btn">＋ Save Entry</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='index.html'">Cancel</button>
             </form>
         </div>
     </div>
@@ -139,31 +142,41 @@
     <script>
         // Wait for receiving.js to load before calling initDB
         window.addEventListener('DOMContentLoaded', () => {
-            initDB().then(() => {
-                renderTable();
-                document.getElementById("receivingForm").addEventListener("submit", e => {
-                e.preventDefault();
-                const form = e.target;
-                saveReceiving({
-                    date: form.date.value,
-                    supplier: form.supplier.value,
-                    material: form.material.value,
-                    invoice_qty: parseInt(form.invoice_qty.value),
-                    received_qty: parseInt(form.received_qty.value),
-                    unit: form.unit.value,
-                    vehicle_number: form.vehicle_number.value,
-                    lot_no: form.lot_no.value,
-                    remarks: form.remarks.value,
-                    operator_id: parseInt(form.operator_id.value),
-                    created_at: new Date().toISOString()
+            if (typeof initDB !== 'function') {
+                console.error('initDB is not defined; skipping offline setup.');
+                return;
+            }
+
+            initDB()
+                .then(() => {
+                    renderTable();
+                    document.getElementById("receivingForm").addEventListener("submit", e => {
+                        e.preventDefault();
+                        const form = e.target;
+                        saveReceiving({
+                            date: form.date.value,
+                            supplier: form.supplier.value,
+                            material: form.material.value,
+                            invoice_qty: parseInt(form.invoice_qty.value),
+                            received_qty: parseInt(form.received_qty.value),
+                            unit: form.unit.value,
+                            vehicle_number: form.vehicle_number.value,
+                            lot_no: form.lot_no.value,
+                            remarks: form.remarks.value,
+                            operator_id: parseInt(form.operator_id.value),
+                            created_at: new Date().toISOString()
+                        });
+                        form.reset();
+                        // Append offline record without clearing table
+                        renderTable(true); // true = offline append
+                        syncData(); // try sync immediately if online
+                    });
+                })
+                .catch((err) => {
+                    console.error('DB init failed, running in online-only mode:', err);
+                    // In this mode, the form will submit normally to the server without offline caching.
                 });
-                form.reset();
-                // Append offline record without clearing table
-                renderTable(true); // true = offline append
-                syncData(); // try sync immediately if online
-            });
         });
-    });
     </script>
     <script>
         if ('serviceWorker' in navigator) {

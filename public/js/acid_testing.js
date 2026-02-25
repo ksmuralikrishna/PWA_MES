@@ -1,6 +1,6 @@
 let db;
 
-const request = indexedDB.open('mes_db', 3);
+const request = indexedDB.open('mes_db', 4);
 
 request.onupgradeneeded = function (e) {
     db = e.target.result;

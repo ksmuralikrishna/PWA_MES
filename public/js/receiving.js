@@ -1,7 +1,7 @@
 // IndexedDB setup
 let db;
 const DB_NAME = "mes_db";
-const DB_VERSION = 2;
+const DB_VERSION = 4;
 
 // ===== UI SHELL (for offline + online) =====
 document.addEventListener("DOMContentLoaded", () => {
