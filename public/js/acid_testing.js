@@ -1,27 +1,26 @@
 let db;
 
-const request = indexedDB.open('mes_db', 4);
+document.addEventListener("DOMContentLoaded", () => {
+    MES_DB.init().then(database => {
+        db = database;
+        syncPendingData();
+        // receiving logic here
+    });
+});
 
-request.onupgradeneeded = function (e) {
-    db = e.target.result;
-
-    if (!db.objectStoreNames.contains('acid_testings')) {
-        db.createObjectStore('acid_testings', { keyPath: 'id', autoIncrement: true });
-    }
-};
-
-request.onsuccess = function (e) {
-    db = e.target.result;
-    // loadLotNumbers();
-    syncPendingData();
-};
+// request.onsuccess = function (e) {
+//     db = e.target.result;
+//     // loadLotNumbers();
+//     syncPendingData();
+// };
 
 document.addEventListener("DOMContentLoaded", async () => {
+    console.log("worked 1");
     const lotSelect = document.getElementById("lotNumber");
     const supplierInput = document.getElementById("supplier");
     const vehicleInput = document.getElementById("vehicle_number");
     const inhouseWeightInput = document.getElementById("inhouse_weighbridge_weight");
-
+    console.log("worked 1");
     // Fetch receivings from the existing API
     const receivings = await fetch("/api/receivings")
         .then(res => res.json())
@@ -53,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.getElementById('acidTestingForm').addEventListener('submit', e => {
     e.preventDefault();
-
+    console.log("worked 2");
     const formData = Object.fromEntries(new FormData(e.target));
     console.log('formData:', formData);
     if (navigator.onLine) {

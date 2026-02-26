@@ -13,17 +13,21 @@ return new class extends Migration
     {
         Schema::create('receivings', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('supplier');
-            $table->string('material');
-            $table->integer('invoice_qty');
-            $table->integer('received_qty');
+            $table->date('receipt_date');
+            $table->integer('supplier_id');
+            $table->integer('material_id');
+            $table->decimal('invoice_qty', 10, 2);
+            $table->decimal('received_qty', 10, 2);
             $table->string('unit');
             $table->string('vehicle_number');
             $table->string('lot_no')->unique();
             $table->text('remarks')->nullable();
-            $table->unsignedBigInteger('operator_id');
-            $table->enum('status', ['pending', 'synced'])->default('synced');
+
+            $table->integer('status');
+            $table->boolean('is_active')->default(true);
+            $table->integer('created_by');
+            $table->integer('updated_by');
+            // $table->enum('status', ['pending', 'synced'])->default('synced');
             $table->timestamps();
         });
     }

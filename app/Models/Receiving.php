@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Receiving extends Model
 {
     protected $fillable = [
-        'date',
-        'supplier',
-        'material',
+        'receipt_date',
+        'supplier_id',
+        'material_id',
         'invoice_qty',
         'received_qty',
         'unit',
         'vehicle_number',
         'lot_no',
         'remarks',
-        'operator_id'
+        'created_by',
+        'updated_by'
     ];
 }

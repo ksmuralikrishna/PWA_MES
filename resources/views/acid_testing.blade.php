@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acid Testing</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- <link rel="manifest" href="{{ asset('manifest.json') }}"> -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="{{ asset('css/form-entry.css') }}"> -->
+    <!-- <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="stylesheet" href="{{ asset('css/form-entry.css') }}"> -->
     <link rel="manifest" href="//{{ request()->getHost() }}/manifest.json">
-    <link rel="manifest" href="//{{ request()->getHost() }}/css/form-entry.css">
+    <link rel="stylesheet" href="//{{ request()->getHost() }}/css/form-entry.css">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"> -->
+
 </head>
 <body>
     <!-- Header from receiving page -->
@@ -128,6 +129,8 @@
     </div>
 
     <!-- <script src="{{ asset('js/acid_testing.js') }}" defer></script> -->
-    <script src="//{{ request()->getHost() }}/js/receiving.js" defer></script>
+    <script src="//{{ request()->getHost() }}/js/db.js" defer></script>
+    <script src="//{{ request()->getHost() }}/js/acid_testing.js" defer></script>
+    
 </body>
 </html>

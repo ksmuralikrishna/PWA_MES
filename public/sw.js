@@ -3,16 +3,22 @@ const CACHE_NAME = 'mes-cache-v2';
 const APP_SHELL = [
     '/',
     '/index.html',
-    '/offline.html',
+    '/receiving',
+    '/acid-testing',
+    '/js/db.js',
     '/js/receiving.js',
     '/js/acid_testing.js',
-    '/manifest.json'
+    '/manifest.json',
+    '/icons/5024802-200.png',
+    '/icons/8056098-200.png',
+    '/favicon.ico'
 ];
 
 // Install → cache app shell
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
+            console.log('[SW] Caching files');
             return cache.addAll(APP_SHELL);
         })
     );

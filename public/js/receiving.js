@@ -1,79 +1,87 @@
-// IndexedDB setup
 let db;
-const DB_NAME = "mes_db";
-const DB_VERSION = 4;
 
-// ===== UI SHELL (for offline + online) =====
-document.addEventListener("DOMContentLoaded", () => {
-    const app = document.getElementById("app");
-    if (!app) return;
+// document.addEventListener("DOMContentLoaded", () => {
+//     MES_DB.init().then(database => {
+//         db = database;
+//         console.log("DB ready", db);
 
-    app.innerHTML = `
-        <h2>Receiving</h2>
+//         // Only now call renderTable
+//         renderTable();
+//         // receiving logic here
+//     });
+// });
 
-        <form id="receivingForm">
-            <input type="date" name="date" required>
-            <input type="text" name="supplier" placeholder="Supplier" required>
-            <input type="text" name="material" placeholder="Material" required>
-            <input type="number" name="invoice_qty" placeholder="Invoice Qty" required>
-            <input type="number" name="received_qty" placeholder="Received Qty" required>
-            <input type="text" name="unit" placeholder="Unit" required>
-            <input type="text" name="vehicle_number" placeholder="Vehicle No" required>
-            <input type="text" name="lot_no" placeholder="Lot No" required>
-            <input type="text" name="remarks" placeholder="Remarks">
-            <button type="submit">Save</button>
-        </form>
+// // ===== UI SHELL (for offline + online) =====
+// document.addEventListener("DOMContentLoaded", () => {
+//     const app = document.getElementById("app");
+//     if (!app) return;
 
-        <h3>Receiving Records</h3>
-        <table border="1" id="receivingTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Supplier</th>
-                    <th>Material</th>
-                    <th>Invoice Qty</th>
-                    <th>Received Qty</th>
-                    <th>Unit</th>
-                    <th>Vehicle</th>
-                    <th>Lot No</th>
-                    <th>Remarks</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    `;
-});
+//     app.innerHTML = `
+//         <h2>Receiving</h2>
 
-function initDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+//         <form id="receivingForm">
+//             <input type="date" name="date" required>
+//             <input type="text" name="supplier" placeholder="Supplier" required>
+//             <input type="text" name="material" placeholder="Material" required>
+//             <input type="number" name="invoice_qty" placeholder="Invoice Qty" required>
+//             <input type="number" name="received_qty" placeholder="Received Qty" required>
+//             <input type="text" name="unit" placeholder="Unit" required>
+//             <input type="text" name="vehicle_number" placeholder="Vehicle No" required>
+//             <input type="text" name="lot_no" placeholder="Lot No" required>
+//             <input type="text" name="remarks" placeholder="Remarks">
+//             <button type="submit">Save</button>
+//         </form>
 
-        request.onupgradeneeded = (event) => {
-            db = event.target.result;
-            if (!db.objectStoreNames.contains("receivings")) {
-                db.createObjectStore("receivings", { keyPath: "id" });
-            }
-            if (!db.objectStoreNames.contains("sync_queue")) {
-                db.createObjectStore("sync_queue", { keyPath: "id" });
-            }
-        };
+//         <h3>Receiving Records</h3>
+//         <table border="1" id="receivingTable">
+//             <thead>
+//                 <tr>
+//                     <th>Date</th>
+//                     <th>Supplier</th>
+//                     <th>Material</th>
+//                     <th>Invoice Qty</th>
+//                     <th>Received Qty</th>
+//                     <th>Unit</th>
+//                     <th>Vehicle</th>
+//                     <th>Lot No</th>
+//                     <th>Remarks</th>
+//                     <th>Status</th>
+//                 </tr>
+//             </thead>
+//             <tbody></tbody>
+//         </table>
+//     `;
+// });
 
-        request.onsuccess = (event) => {
-            db = event.target.result;
-            resolve();
-        };
+// function initDB() { 
+//     return new Promise((resolve, reject) => {
+//         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        request.onerror = () => reject("DB init failed");
-    });
-}
+//         request.onupgradeneeded = (event) => {
+//             db = event.target.result;
+//             if (!db.objectStoreNames.contains("receivings")) {
+//                 db.createObjectStore("receivings", { keyPath: "id" });
+//             }
+//             if (!db.objectStoreNames.contains("sync_queue")) {
+//                 db.createObjectStore("sync_queue", { keyPath: "id" });
+//             }
+//         };
+
+//         request.onsuccess = (event) => {
+//             db = event.target.result;
+//             resolve();
+//         };
+
+//         request.onerror = () => reject("DB init failed");
+//     });
+// }
 
 // Save Receiving locally + add to sync queue
 function saveReceiving(formData) {
     const id = crypto.randomUUID();
     const record = { id, ...formData, status: "pending", created_at: new Date().toISOString() };
 
-    const tx = db.transaction(["receivings", "sync_queue"], "readwrite");
+    const tx = window.db.transaction(["receivings", "sync_queue"], "readwrite");
     tx.objectStore("receivings").put(record);
     tx.objectStore("sync_queue").put({
         id,
@@ -90,7 +98,7 @@ function saveReceiving(formData) {
 async function syncData() {
     if (!navigator.onLine) return;
 
-    const readTx = db.transaction("sync_queue", "readonly");
+    const readTx = window.db.transaction("sync_queue", "readonly");
     const readStore = readTx.objectStore("sync_queue");
     const request = readStore.getAll();
 
@@ -106,14 +114,14 @@ async function syncData() {
                 });
                 if (!res.ok) throw new Error("Server error");
 
-                const delTx = db.transaction("sync_queue", "readwrite");
+                const delTx = window.db.transaction("sync_queue", "readwrite");
                 delTx.objectStore("sync_queue").delete(item.id);
 
                 markAsSynced(item.id);
             } catch (err) {
                 item.retry_count++;
 
-                const retryTx = db.transaction("sync_queue", "readwrite");
+                const retryTx = window.db.transaction("sync_queue", "readwrite");
                 retryTx.objectStore("sync_queue").put(item);
             }
         }
@@ -125,7 +133,7 @@ async function syncData() {
 
 // Mark record as synced in UI
 function markAsSynced(id) {
-    const tx = db.transaction("receivings", "readwrite");
+    const tx = window.db.transaction("receivings", "readwrite");
     const store = tx.objectStore("receivings");
     const req = store.get(id);
     req.onsuccess = () => {
@@ -161,15 +169,14 @@ async function fetchServerData() {
 // Fetch only pending offline entries from sync_queue
 function fetchPendingOfflineData() {
     return new Promise((resolve) => {
-        const tx = db.transaction("sync_queue", "readonly");
+        const tx = window.db.transaction("sync_queue", "readonly");
         const store = tx.objectStore("sync_queue");
         const request = store.getAll();
 
         request.onsuccess = () => {
-            // Convert to table-friendly format
             const data = request.result.map(item => ({
-                ...item.payload,   // original record
-                status: "pending"  // always pending in queue
+                ...item.payload,
+                status: "pending"
             }));
             resolve(data);
         };
@@ -177,6 +184,24 @@ function fetchPendingOfflineData() {
         request.onerror = () => resolve([]);
     });
 }
+// function fetchPendingOfflineData() {
+//     return new Promise((resolve) => {
+//         const tx = db.transaction("sync_queue", "readonly");
+//         const store = tx.objectStore("sync_queue");
+//         const request = store.getAll();
+
+//         request.onsuccess = () => {
+//             // Convert to table-friendly format
+//             const data = request.result.map(item => ({
+//                 ...item.payload,   // original record
+//                 status: "pending"  // always pending in queue
+//             }));
+//             resolve(data);
+//         };
+
+//         request.onerror = () => resolve([]);
+//     });
+// }
 
 // Render combined table
 async function renderTable(offlineAppend = false) {
