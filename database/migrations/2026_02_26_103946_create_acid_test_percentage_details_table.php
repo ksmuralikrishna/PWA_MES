@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('avg_acid_pct', 5, 2);
             $table->string('remarks')->nullable();
 
-            $table->integer('status');
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
             $table->integer('created_by');
             $table->integer('updated_by');

@@ -21,10 +21,10 @@ return new class extends Migration
             $table->decimal('invoice_qty', 10, 2);
             $table->decimal('received_qty', 10, 2);  //IN HOUSE WEIGH BRIDGE WEIGHT
             $table->string('vehicle_number')->nullable();
-            $table->decimal('avg_pallet_and_foreign_weight', 10, 2)->nullable();
+            $table->decimal('avg_pallet_and_foreign_weight', 10, 3)->nullable();
 
-            $table->integer('status');
-            $table->boolean('is_active');
+            $table->integer('status')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->timestamps();

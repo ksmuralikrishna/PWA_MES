@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('acid_stock_conditions', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('stock_code');
-            $table->string('description');
-            $table->decimal('min_pct', 5, 2);
-            $table->decimal('max_pct', 5, 2);
+            $table->string('supplier_code')->unique();   // SUP001
+            $table->string('supplier_name');                      // Supplier Name
+            $table->string('facts_supplier_code')->nullable();
+            $table->text('supplier_address')->nullable();
+            $table->string('contact_number', 20)->nullable();
+            $table->string('supplier_email')->nullable();
 
-            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
             $table->integer('created_by');
             $table->integer('updated_by');
+            $table->timestamps();
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('acid_stock_conditions');
+        Schema::dropIfExists('suppliers');
     }
 };
