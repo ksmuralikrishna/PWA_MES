@@ -1,18 +1,14 @@
 <?php
+// ── routes/web.php ────────────────────────────────────────────────
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\AuthWebController;
+use App\Http\Controllers\Web\DashboardController;
 
-use App\Http\Controllers\ReceivingController;
-use App\Http\Controllers\Api\AcidTestingController;
+// Guest — login page
+Route::get('/',      [AuthWebController::class, 'showLogin'])->name('login');
+Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login.get');
 
-Route::get('/', function () {
-    return file_get_contents(public_path('index.html'));
-});
-
-Route::get('/receiving', function () {
-    return view('receiving'); // Laravel will look for resources/views/receiving.blade.php
-});
-
-Route::get('/acid-testing', function () {
-    return view('acid_testing'); // Laravel will look for resources/views/acid_testing.blade.php
-});
+// Authenticated pages
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::post('/logout',   [AuthWebController::class, 'logout'])->name('logout');

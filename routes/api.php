@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\ReceivingController;
 use App\Http\Controllers\Api\AcidTestingController;
 use App\Http\Controllers\Api\AcidStockConditionController;
+use App\Http\Controllers\Api\BbsuController;
+
 
 // future imports:
 // use App\Http\Controllers\Api\BbsuController;
@@ -143,13 +145,29 @@ Route::middleware('auth:sanctum')->group(function () {
                ->middleware('module:acid-testing,can_delete');
      });
 
-    // ── BBSU (uncomment when controller is ready) ─────────────────
-    // Route::prefix('bbsu')->middleware('module:bbsu')->group(function () {
-    //     Route::get('/',    [BbsuController::class, 'index']);
-    //     Route::post('/',   [BbsuController::class, 'store'])->middleware('module:bbsu,can_create');
-    //     Route::put('/{id}',[BbsuController::class, 'update'])->middleware('module:bbsu,can_edit');
-    // });
+     Route::prefix('bbsu')->middleware('module:bbsu')->group(function () {
 
+          // ── Static/named routes FIRST (before /{id}) ─────────────────
+          Route::get('/generate-doc-no',      [BbsuController::class, 'generateDocNo']);
+          Route::get('/output-materials',     [BbsuController::class, 'outputMaterials']);
+          Route::get('/available-lots',       [BbsuController::class, 'availableLots']);
+      
+          // ── CRUD ──────────────────────────────────────────────────────
+          Route::get('/',                     [BbsuController::class, 'index']);
+          Route::get('/{id}',                 [BbsuController::class, 'show']);
+      
+          Route::post('/',                    [BbsuController::class, 'store'])
+               ->middleware('module:bbsu,can_create');
+      
+          Route::put('/{id}',                 [BbsuController::class, 'update'])
+               ->middleware('module:bbsu,can_edit');
+      
+          Route::patch('/{id}/status',        [BbsuController::class, 'updateStatus'])
+               ->middleware('module:bbsu,can_edit');
+      
+          Route::delete('/{id}',              [BbsuController::class, 'destroy'])
+               ->middleware('module:bbsu,can_delete');
+      });
     // ── Smelting ──────────────────────────────────────────────────
     // Route::prefix('smelting')->middleware('module:smelting')->group(function () { ... });
 
