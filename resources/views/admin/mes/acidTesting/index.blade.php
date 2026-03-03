@@ -244,7 +244,7 @@
 
 @push('scripts')
 <script>
-    const EDIT_BASE  = '{{ url('/admin/mes/receiving') }}/';
+    const EDIT_BASE  = '{{ url('/admin/mes/acidTesting') }}/';
     const CREATE_URL = '{{ route('admin.mes.receiving.create') }}';
 
     let state = { page: 1, perPage: 20, search: '', status: '', supplierId: '', dateFrom: '', dateTo: '' };
@@ -273,7 +273,7 @@
         document.getElementById('tableBody').innerHTML =
             '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gr-text-muted);">Loading...</td></tr>';
 
-        let url = `/receivings?page=${state.page}&per_page=${state.perPage}`;
+        let url = `/acid-testings?page=${state.page}&per_page=${state.perPage}`;
         if (state.search)       url += `&search=${encodeURIComponent(state.search)}`;
         if (state.status !== '') url += `&status=${state.status}`;
         if (state.supplierId)   url += `&supplier_id=${state.supplierId}`;
@@ -294,6 +294,7 @@
     }
 
     function renderTable(items) {
+        console.log("items",items);
         const tbody = document.getElementById('tableBody');
         if (!items.length) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px 20px;">
@@ -309,18 +310,17 @@
         tbody.innerHTML = items.map(item => {
             const s = STATUS_MAP[item.status] ?? { label: 'Unknown', cls: 'draft' };
             const isDraft = item.status === 0;
-            const date = item.receipt_date
-                ? new Date(item.receipt_date).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+            const date = item.test_date
+                ? new Date(item.test_date).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
                 : '—';
             return `<tr>
                 <td style="padding-right:0;"><div class="checkbox-wrap"><input type="checkbox"></div></td>
-                <td><strong style="color:var(--gr-text-dark);">${item.lot_no ?? '—'}</strong></td>
+                <td><strong style="color:var(--gr-text-dark);">${item.lot_number ?? '—'}</strong></td>
                 <td><div style="display:flex;flex-direction:column;gap:2px;"><span style="font-weight:500;">${date}</span></div></td>
+                <td>${item.vehicle_number ?? '—'}</td>
                 <td><div style="display:flex;flex-direction:column;gap:2px;">
                     <span style="font-weight:600;color:var(--gr-text-dark);">${item.supplier?.supplier_name ?? '—'}</span>
-                    <span style="font-size:11px;color:var(--gr-text-muted);">${item.material?.material_name ?? '—'}</span>
                 </div></td>
-                <td>${item.vehicle_number ?? '—'}</td>
                 <td><strong>${parseFloat(item.received_qty ?? 0).toFixed(2)}</strong> <span style="font-size:11px;color:var(--gr-text-muted);">${item.unit ?? ''}</span></td>
                 <td><span class="status-badge ${s.cls}">${s.label}</span></td>
                 <td>
