@@ -219,11 +219,11 @@
                 <thead>
                     <tr>
                         <th style="width:40px;padding-right:0;"><div class="checkbox-wrap"><input type="checkbox"></div></th>
-                        <th>Doc No</th>
                         <th>Date</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Catgory</th>
+                        <th>Lot No</th>
+                        <th>Vehicle No</th>
+                        <th>Suppliers</th>
+                        <th>in house weigh bridge weight</th>
                         <th>Status</th>
                         <th style="width:60px;">Action</th>
                     </tr>

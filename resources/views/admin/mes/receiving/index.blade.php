@@ -219,8 +219,8 @@
                 <thead>
                     <tr>
                         <th style="width:40px;padding-right:0;"><div class="checkbox-wrap"><input type="checkbox"></div></th>
-                        <th>Record / Lot No</th>
                         <th>Date</th>
+                        <th>Record / Lot No</th>
                         <th>Supplier & Material</th>
                         <th>Vehicle</th>
                         <th>Quantity</th>
