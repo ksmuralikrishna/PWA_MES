@@ -26,6 +26,7 @@ class UpdateReceivingRequest extends FormRequest
             'unit'           => 'sometimes|required|string|max:50',
             'vehicle_number' => 'sometimes|required|string|max:50',
             'lot_no'         => ['sometimes', 'required', 'string', 'max:100', Rule::unique('receivings', 'lot_no')->ignore($id)],
+            //'lot_no'         => 'sometimes|required|string|max:50',
             'remarks'        => 'nullable|string|max:1000',
         ];
     }

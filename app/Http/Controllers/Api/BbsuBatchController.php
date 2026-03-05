@@ -11,6 +11,7 @@ use App\Models\BbsuInputDetail;
 use App\Models\BbsuOutputMaterial;
 use App\Models\BbsuPowerConsumption;
 use App\Models\AcidTestPercentageDetail;
+use App\Models\AcidTesting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -71,7 +72,7 @@ class BbsuBatchController extends Controller
                 'end_time'   => $request->end_time,
                 'doc_date'   => $request->doc_date,
                 'category'   => $request->category,
-                'status'     => 'draft',
+                'status'     => 0,
                 'is_active'  => true,
                 'created_by' => $userId,
                 'updated_by' => $userId,
@@ -157,12 +158,19 @@ class BbsuBatchController extends Controller
      * GET /api/bbsu-batches/{bbsu_batch}
      * Show a single BBSU batch with all related data.
      */
-    public function show(BbsuBatch $bbsu_batch): JsonResponse
+    public function show($id)
     {
-        $bbsu_batch->load(['inputDetails', 'outputMaterial', 'powerConsumption']);
+        $batch = BbsuBatch::with([
+            'inputDetails',
+            'outputMaterial',
+            'powerConsumption',
+            'createdBy:id,name',
+            'updatedBy:id,name',
+        ])->findOrFail($id);
 
         return response()->json([
-            'data' => new BbsuBatchResource($bbsu_batch),
+            'status' => 'ok',
+            'data'   => $batch,
         ]);
     }
 
@@ -285,7 +293,7 @@ class BbsuBatchController extends Controller
     public function updateStatus(Request $request, BbsuBatch $bbsu_batch): JsonResponse
     {
         $request->validate([
-            'status' => 'required|in:draft,submitted,completed',
+            'status' => 'required|in:0,1,2',
         ]);
 
         $bbsu_batch->update([
@@ -298,51 +306,131 @@ class BbsuBatchController extends Controller
             'status'  => $bbsu_batch->status,
         ]);
     }
-    public function acidSummary(): JsonResponse
+
+    // public function acidSummary(): JsonResponse
+    // {
+    //     // Load all active details with related acidTest and stockCondition
+    //     $data = AcidTestPercentageDetail::with([
+    //         'acidTest.receiving',
+    //         'stockCondition'
+    //     ])
+    //     ->where('is_active', true)
+    //     ->get();
+
+    //     // Separate ulab_type = 5 and other types
+    //     $typeFive = $data->where('ulab_type', 5);
+    //     $others   = $data->where('ulab_type', '!=', 5);
+
+    //     $result = collect();
+
+    //     // ── Group ulab_type = 5 into one row ─────────────────────────────
+    //     if ($typeFive->count() > 0) {
+    //         $first = $typeFive->first();
+
+    //         $result->push([
+    //             'ulab_type'            => 5,
+    //             'material_description' => $first->stockCondition->description ?? null,
+    //             'lot_no'               => $first->acidTest->receiving->lot_no ?? null,
+    //             'unit'                 => $first->acidTest->receiving->unit ?? null,
+    //             'total_avg_acid_pct'   => $typeFive->sum('avg_acid_pct'),
+    //             'total_net_weight'     => $typeFive->sum('net_weight'),
+    //         ]);
+    //     }
+
+    //     // ── Add other ulab_types as normal rows ──────────────────────────
+    //     foreach ($others as $row) {
+    //         $result->push([
+    //             'ulab_type'            => $row->ulab_type,
+    //             'material_description' => $row->stockCondition->description ?? null,
+    //             'lot_no'               => $row->acidTest->receiving->lot_no ?? null,
+    //             'unit'                 => $row->acidTest->receiving->unit ?? null,
+    //             'avg_acid_pct'         => $row->avg_acid_pct,
+    //             'net_weight'           => $row->net_weight,
+    //         ]);
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'BBSU Acid summary report generated successfully.',
+    //         'data'    => $result
+    //     ]);
+    // }
+    
+    public function acidSummaryByLot($lotNo): JsonResponse
     {
-        // Load all active details with related acidTest and stockCondition
+        // Find the acid test header for this lot number
+        $acidTest = AcidTesting::where('lot_number', $lotNo)->first();
+    
+        if (!$acidTest) {
+            return response()->json([
+                'message' => 'No acid test found for this lot number.',
+                'data'    => []
+            ], 404);
+        }
+    
+        // Load all active details for this specific acid test
         $data = AcidTestPercentageDetail::with([
             'acidTest.receiving',
             'stockCondition'
         ])
+        ->where('acid_test_id', $acidTest->id)
         ->where('is_active', true)
         ->get();
-
+    
+        if ($data->isEmpty()) {
+            return response()->json([
+                'message' => 'No details found for this lot number.',
+                'data'    => []
+            ]);
+        }
+    
         // Separate ulab_type = 5 and other types
         $typeFive = $data->where('ulab_type', 5);
         $others   = $data->where('ulab_type', '!=', 5);
-
+    
         $result = collect();
-
-        // ── Group ulab_type = 5 into one row ─────────────────────────────
+    
+        // ── Group ulab_type = 5 into one row ─────────────────────────
         if ($typeFive->count() > 0) {
             $first = $typeFive->first();
-
+    
             $result->push([
                 'ulab_type'            => 5,
                 'material_description' => $first->stockCondition->description ?? null,
                 'lot_no'               => $first->acidTest->receiving->lot_no ?? null,
-                'unit'                 => $first->acidTest->receiving->unit ?? null,
-                'total_avg_acid_pct'   => $typeFive->sum('avg_acid_pct'),
-                'total_net_weight'     => $typeFive->sum('net_weight'),
+                'unit'                 => $first->acidTest->receiving->unit   ?? null,
+                'avg_acid_pct'         => $typeFive->sum('avg_acid_pct'),
+                'net_weight'           => $typeFive->sum('net_weight'),
             ]);
         }
-
-        // ── Add other ulab_types as normal rows ──────────────────────────
+    
+        // ── Add other ulab_types as normal rows ───────────────────────
         foreach ($others as $row) {
             $result->push([
                 'ulab_type'            => $row->ulab_type,
-                'material_description' => $row->stockCondition->description ?? null,
-                'lot_no'               => $row->acidTest->receiving->lot_no ?? null,
-                'unit'                 => $row->acidTest->receiving->unit ?? null,
+                'material_description' => $row->stockCondition->description   ?? null,
+                'lot_no'               => $row->acidTest->receiving->lot_no   ?? null,
+                'unit'                 => $row->acidTest->receiving->unit      ?? null,
                 'avg_acid_pct'         => $row->avg_acid_pct,
                 'net_weight'           => $row->net_weight,
             ]);
         }
+    
+        return response()->json([
+            'message' => 'Acid summary for lot ' . $lotNo . ' retrieved successfully.',
+            'data'    => $result
+        ]);
+    }
+
+    public function lotNumbers()
+    {
+        $lots = AcidTesting::where('status', 1)
+            ->select('id', 'lot_number')
+            ->orderBy('lot_number')
+            ->get();
 
         return response()->json([
-            'message' => 'BBSU Acid summary report generated successfully.',
-            'data'    => $result
+            'status' => 'ok',
+            'data'   => $lots
         ]);
     }
 }

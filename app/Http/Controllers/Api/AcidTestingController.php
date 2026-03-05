@@ -78,6 +78,7 @@ class AcidTestingController extends Controller
         ]);
     }
 
+
     /**
      * POST /api/acid-testings
      * Create acid test header + pallet details in one call
@@ -234,8 +235,10 @@ class AcidTestingController extends Controller
         ));
 
         // Replace pallet details if provided
+        // if ($request->has('details')) {
+        //     AcidTestPercentageDetail::where('acid_test_id', $header->id)->delete();
         if ($request->has('details')) {
-            AcidTestPercentageDetail::where('acid_test_id', $header->id)->delete();
+            AcidTestPercentageDetail::where('acid_test_id', $header->id)->update(['is_active' => 0]);
 
             foreach ($request->details as $row) {
                 $weightDifference = $row['initial_weight'] - $row['drained_weight'];

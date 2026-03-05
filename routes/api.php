@@ -131,28 +131,34 @@ Route::middleware('auth:sanctum')->group(function () {
                ->middleware('module:acid-testing,can_delete');
      });
 
-     Route::prefix('bbsu-batches')->name('bbsu.')->group(function () {
+     Route::prefix('bbsu-batches')->middleware('module:bbsu')->group(function () {
 
-          // List all batches (with filters: status, category, doc_date, batch_no)
-          Route::get('/', [BbsuBatchController::class, 'index'])->name('index');
+          Route::get('/', [BbsuBatchController::class, 'index']);
       
-          // Create new BBSU batch (header + input details + output material + power consumption)
-          Route::post('/', [BbsuBatchController::class, 'store'])->name('store');
+          // reports or helper routes FIRST
+          Route::get('/acid-summary/{lotNo}', [BbsuBatchController::class, 'acidSummaryByLot']);
+          Route::get('/acid-test-lot-numbers', [BbsuBatchController::class, 'lotNumbers']);
       
-          // Show single batch with all related data
-          Route::get('/{bbsu_batch}', [BbsuBatchController::class, 'show'])->name('show');
+          // show batch
+          Route::get('/{id}', [BbsuBatchController::class, 'show']);
       
-          // Update batch and all child records
-          Route::put('/{bbsu_batch}', [BbsuBatchController::class, 'update'])->name('update');
+          // create
+          Route::post('/', [BbsuBatchController::class, 'store'])
+              ->middleware('module:bbsu,can_create');
       
-          // Soft-delete batch
-          Route::delete('/{bbsu_batch}', [BbsuBatchController::class, 'destroy'])->name('destroy');
+          // update
+          Route::put('/{id}', [BbsuBatchController::class, 'update'])
+              ->middleware('module:bbsu,can_edit');
       
-          // Update batch status only
-          Route::patch('/{bbsu_batch}/status', [BbsuBatchController::class, 'updateStatus'])->name('updateStatus');
-          Route::get('/reports/acid-summary', [BbsuBatchController::class, 'acidSummary']) ->name('acidSummary');
-
-     });
+          // update status
+          Route::patch('/{id}/status', [BbsuBatchController::class, 'updateStatus'])
+              ->middleware('module:bbsu,can_edit');
+      
+          // delete
+          Route::delete('/{id}', [BbsuBatchController::class, 'destroy'])
+              ->middleware('module:bbsu,can_delete');
+      
+      });
     // ── Smelting ──────────────────────────────────────────────────
     // Route::prefix('smelting')->middleware('module:smelting')->group(function () { ... });
 

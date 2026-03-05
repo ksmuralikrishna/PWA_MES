@@ -291,6 +291,11 @@
 
 @push('scripts')
 <script>
+// ── Import DataService for offline support ────────────────────────
+// import { DataService } from '/pwa/data-service.js';
+// const ds = new DataService('acid_testing');
+// let _localId     = null; // tracks IndexedDB local record id
+
 const PATH_PARTS = window.location.pathname.split('/').filter(Boolean);
 // URL pattern: /admin/mes/receiving/{id}/edit  OR  /admin/mes/receiving/create
 const isCreate   = PATH_PARTS[PATH_PARTS.length - 1] === 'create';
@@ -641,19 +646,19 @@ function renumberRows() {
     });
 }
 
-// ── Save ─────────────────────────────────────────────────────────────────────
-function saveRecord() {
-    const btn = document.querySelector('.form-actions .btn-primary');
-    btn.disabled  = true;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" style="animation:spin 0.8s linear infinite;width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Saving…`;
+// // ── Save ─────────────────────────────────────────────────────────────────────
+// function saveRecord() {
+//     const btn = document.querySelector('.form-actions .btn-primary');
+//     btn.disabled  = true;
+//     btn.innerHTML = `<svg viewBox="0 0 24 24" style="animation:spin 0.8s linear infinite;width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Saving…`;
 
-    // TODO: wire up to apiFetch('/acid-testings', { method: 'POST', body: JSON.stringify(payload) })
-    setTimeout(() => {
-        btn.disabled  = false;
-        btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Create Record`;
-        showAlert('✓ Acid test record created successfully!', 'success');
-    }, 1400);
-}
+//     // TODO: wire up to apiFetch('/acid-testings', { method: 'POST', body: JSON.stringify(payload) })
+//     setTimeout(() => {
+//         btn.disabled  = false;
+//         btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Create Record`;
+//         showAlert('✓ Acid test record created successfully!', 'success');
+//     }, 1400);
+// }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 // function showAlert(msg, type = 'success') {
@@ -663,7 +668,18 @@ function saveRecord() {
 //     el.style.display = 'block';
 //     setTimeout(() => { el.style.display = 'none'; }, 4000);
 // }
+function showAlert(msg, type = 'error') {
+    const el = document.getElementById('formAlert');
+    el.className = `form-alert ${type}`;
+    el.textContent = msg;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
+function clearAlert() {
+    const el = document.getElementById('formAlert');
+    el.className = 'form-alert';
+    el.textContent = '';
+}
 // ── Build payload matching POST /api/acid-testings validation ─────────────────
 function buildPayload() {
     const details = [];
@@ -692,10 +708,10 @@ function buildPayload() {
             pallet_no      : parseInt(palletNo) || (i + 1),
             gross_weight   : gross,
             net_weight     : net,
-            ulab_type      : remarksLabel,   // controller stores text e.g. "ULAB - INDUSTRIAL"
+            ulab_type      : remarks,   // controller stores text e.g. "ULAB - INDUSTRIAL"
             initial_weight : initial,
             drained_weight : drained,
-            remarks        : remarksLabel,
+            remarks        : remarks,
         });
     });
 
@@ -704,11 +720,6 @@ function buildPayload() {
         return null;
     }
 
-    // supplier_id, invoice_qty, received_qty come from the prefill data loaded on lot select
-    // if (!currentLotData) {
-    //     showAlert('Please select a lot first.', 'error');
-    //     return null;
-    // }
 
     return {
         test_date                    : document.getElementById('date').value,
@@ -724,18 +735,7 @@ function buildPayload() {
     };
 }
 
-function showAlert(msg, type = 'error') {
-    const el = document.getElementById('formAlert');
-    el.className = `form-alert ${type}`;
-    el.textContent = msg;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
-function clearAlert() {
-    const el = document.getElementById('formAlert');
-    el.className = 'form-alert';
-    el.textContent = '';
-}
 // ── Save  →  POST /api/acid-testings ─────────────────────────────────────────
 // ── Save (create or update) ───────────────────────────────────────
 async function saveForm(silent = false) {
@@ -781,6 +781,70 @@ async function saveForm(silent = false) {
         if (!silent) showAlert(data.message ?? 'Something went wrong.');
     }
 }
+// ── Save — now uses DataService (offline-aware) ───────────────────
+// async function saveForm(silent = false) {
+//     clearAlert();
+//     clearFieldErrors();
+
+//     const btn = document.getElementById('btnSave');
+//     btn.disabled = true;
+
+//     const result = await ds.save(
+//         buildPayload(),
+//         _localId,                    // local IndexedDB id (null on first save)
+//         isCreate ? null : recordId   // server id (null when creating)
+//     );
+
+//     btn.disabled = false;
+
+//     if (result.success) {
+//         // Remember local_id for subsequent saves in this session
+//         _localId = result.local_id;
+
+//         if (result.synced) {
+//             // ── Online: saved to server ───────────────────────────
+//             if (!silent) {
+//                 if (isCreate) {
+//                     window.location.href = `/admin/mes/acidTesting/${result.server_id}/edit`;
+//                 } else {
+//                     showAlert('Record saved successfully.', 'success');
+//                 }
+//             } else {
+//                 const status = document.getElementById('autosaveStatus');
+//                 status.style.display = 'inline';
+//                 status.textContent = 'Autosaved at ' + new Date().toLocaleTimeString();
+//                 setTimeout(() => status.style.display = 'none', 5000);
+//             }
+
+//         } else {
+//             // ── Offline: saved to IndexedDB ───────────────────────
+//             if (!silent) {
+//                 showAlert(
+//                     '📱 Saved offline — will sync automatically when reconnected.',
+//                     'success'
+//                 );
+//             } else {
+//                 const status = document.getElementById('autosaveStatus');
+//                 status.style.display = 'inline';
+//                 status.textContent = '📱 Saved offline';
+//                 setTimeout(() => status.style.display = 'none', 5000);
+//             }
+//         }
+
+//     } else if (result.validation_error) {
+//         // ── Server returned 422 validation errors ─────────────────
+//         showFieldErrors(result.errors ?? {});
+//         if (!silent) showAlert(result.message ?? 'Please fix the errors below.');
+
+//     } else {
+//         if (!silent) showAlert('Something went wrong. Please try again.');
+//     }
+// }
+
+// // Expose saveForm globally so the onclick in the blade HTML can call it
+// window.saveForm = saveForm;
+// window.onLotChange = onLotChange;
+
 function showFieldErrors(errors) {
     Object.entries(errors).forEach(([field, messages]) => {
         const errEl = document.getElementById('err_' + field);

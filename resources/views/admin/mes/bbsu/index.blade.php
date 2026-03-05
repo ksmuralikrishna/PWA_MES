@@ -244,8 +244,8 @@
 
 @push('scripts')
 <script>
-    const EDIT_BASE  = '{{ url('/admin/mes/receiving') }}/';
-    const CREATE_URL = '{{ route('admin.mes.receiving.create') }}';
+    const EDIT_BASE  = '{{ url('/admin/mes/bbsu') }}/';
+    const CREATE_URL = '{{ route('admin.mes.bbsu.create') }}';
 
     let state = { page: 1, perPage: 20, search: '', status: '', supplierId: '', dateFrom: '', dateTo: '' };
 
@@ -273,7 +273,7 @@
         document.getElementById('tableBody').innerHTML =
             '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gr-text-muted);">Loading...</td></tr>';
 
-        let url = `/receivings?page=${state.page}&per_page=${state.perPage}`;
+        let url = `/bbsu-batches?page=${state.page}&per_page=${state.perPage}`;
         if (state.search)       url += `&search=${encodeURIComponent(state.search)}`;
         if (state.status !== '') url += `&status=${state.status}`;
         if (state.supplierId)   url += `&supplier_id=${state.supplierId}`;
@@ -294,6 +294,7 @@
     }
 
     function renderTable(items) {
+        console.log(items);
         const tbody = document.getElementById('tableBody');
         if (!items.length) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px 20px;">
@@ -309,19 +310,18 @@
         tbody.innerHTML = items.map(item => {
             const s = STATUS_MAP[item.status] ?? { label: 'Unknown', cls: 'draft' };
             const isDraft = item.status === 0;
-            const date = item.receipt_date
-                ? new Date(item.receipt_date).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+            const date = item.doc_date
+                ? new Date(item.doc_date).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
                 : '—';
+            const startTime = formatTimestamp(item.start_time);
+            const endTime = formatTimestamp(item.end_time);
             return `<tr>
                 <td style="padding-right:0;"><div class="checkbox-wrap"><input type="checkbox"></div></td>
-                <td><strong style="color:var(--gr-text-dark);">${item.lot_no ?? '—'}</strong></td>
                 <td><div style="display:flex;flex-direction:column;gap:2px;"><span style="font-weight:500;">${date}</span></div></td>
-                <td><div style="display:flex;flex-direction:column;gap:2px;">
-                    <span style="font-weight:600;color:var(--gr-text-dark);">${item.supplier?.supplier_name ?? '—'}</span>
-                    <span style="font-size:11px;color:var(--gr-text-muted);">${item.material?.material_name ?? '—'}</span>
-                </div></td>
-                <td>${item.vehicle_number ?? '—'}</td>
-                <td><strong>${parseFloat(item.received_qty ?? 0).toFixed(2)}</strong> <span style="font-size:11px;color:var(--gr-text-muted);">${item.unit ?? ''}</span></td>
+                <td><strong style="color:var(--gr-text-dark);">${item.batch_no ?? '—'}</strong></td>
+                <td>${startTime}</td>
+                <td>${endTime}</td>
+                <td><strong>${item.category}</strong> <span style="font-size:11px;color:var(--gr-text-muted);">${item.unit ?? ''}</span></td>
                 <td><span class="status-badge ${s.cls}">${s.label}</span></td>
                 <td>
                     <div class="action-dropdown" id="dropdown-${item.id}">
@@ -419,6 +419,16 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => { state.search = this.value; state.page = 1; loadReceivings(); }, 600);
     });
+    function formatTimestamp(isoString) {
+        const d = new Date(isoString);
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
+        const yyyy = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+
+        return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+    }
 
     loadSuppliers();
     loadReceivings();
