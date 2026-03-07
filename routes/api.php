@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\ReceivingController;
 use App\Http\Controllers\Api\AcidTestingController;
 use App\Http\Controllers\Api\AcidStockConditionController;
 use App\Http\Controllers\Api\BbsuBatchController;
-
+use App\Http\Controllers\Api\SmeltingBatchController;
 
 
 // future imports:
@@ -161,7 +161,16 @@ Route::middleware('auth:sanctum')->group(function () {
       
       });
     // ── Smelting ──────────────────────────────────────────────────
-    // Route::prefix('smelting')->middleware('module:smelting')->group(function () { ... });
+    Route::prefix('smelting-batches')->group(function () {
+          Route::get('/',              [SmeltingBatchController::class, 'index']);
+          // Add this BEFORE the /{id} routes to avoid conflict
+          Route::get('/generate-batch-no', [SmeltingBatchController::class, 'generateBatchNo']);
+          Route::post('/',             [SmeltingBatchController::class, 'store']);
+          Route::get('/{id}',          [SmeltingBatchController::class, 'show']);
+          Route::put('/{id}',          [SmeltingBatchController::class, 'update']);
+          Route::delete('/{id}',       [SmeltingBatchController::class, 'destroy']);
+          Route::patch('/{id}/status', [SmeltingBatchController::class, 'updateStatus']);
+     });
 
     // ── Refining ──────────────────────────────────────────────────
     // Route::prefix('refining')->middleware('module:refining')->group(function () { ... });

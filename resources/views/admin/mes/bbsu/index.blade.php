@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Receiving')
+@section('title', 'BBSU')
 
 @section('breadcrumb')
     <a href="{{ route('admin.dashboard') }}" style="color:var(--text-muted);text-decoration:none;">Dashboard</a>

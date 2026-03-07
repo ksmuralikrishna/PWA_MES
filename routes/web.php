@@ -7,7 +7,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ReceivingWebController;
 use App\Http\Controllers\Web\BbsuWebController;
 use App\Http\Controllers\Web\AcidTestingWebController;
-
+use App\Http\Controllers\Web\Smeltingwebcontroller;
 // Guest — login page
 Route::get('/',      [AuthWebController::class, 'showLogin'])->name('login');
 Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login.get');
@@ -21,15 +21,19 @@ Route::prefix('admin/mes/receiving')->name('admin.mes.receiving.')->group(functi
     Route::get('/create',     [ReceivingWebController::class, 'create'])->name('create');
     Route::get('/{id}/edit',  [ReceivingWebController::class, 'edit'])->name('edit');
 });
-
+Route::prefix('admin/mes/acidTesting')->name('admin.mes.acidTesting.')->group(function () {
+    Route::get('/',           [AcidTestingWebController::class, 'index'])->name('index');
+    Route::get('/create',     [AcidTestingWebController::class, 'create'])->name('create');
+    Route::get('/{id}/edit',  [AcidTestingWebController::class, 'edit'])->name('edit');
+});
 Route::prefix('admin/mes/bbsu')->name('admin.mes.bbsu.')->group(function () {
     Route::get('/',           [BbsuWebController::class, 'index'])->name('index');
     Route::get('/create',     [BbsuWebController::class, 'create'])->name('create');
     Route::get('/{id}/edit',  [BbsuWebController::class, 'edit'])->name('edit');
 });
-Route::prefix('admin/mes/acidTesting')->name('admin.mes.acidTesting.')->group(function () {
-    Route::get('/',           [AcidTestingWebController::class, 'index'])->name('index');
-    Route::get('/create',     [AcidTestingWebController::class, 'create'])->name('create');
-    Route::get('/{id}/edit',  [AcidTestingWebController::class, 'edit'])->name('edit');
+Route::prefix('admin/mes/smelting')->name('admin.mes.smelting.')->group(function () {
+    Route::get('/',           [Smeltingwebcontroller::class, 'index'])->name('index');
+    Route::get('/create',     [Smeltingwebcontroller::class, 'create'])->name('create');
+    Route::get('/{id}/edit',  [Smeltingwebcontroller::class, 'edit'])->name('edit');
 });
 

@@ -19,7 +19,7 @@ class UpdateBbsuBatchRequest extends FormRequest
         return [
             // ---- Header ----
             'batch_no'               => ['required', 'string', 'max:100', Rule::unique('bbsu_batches', 'batch_no')->ignore($batchId)],
-            'start_time'             => 'required|date',
+            'start_time'             => 'required|date',    
             'end_time'               => 'required|date|after_or_equal:start_time',
             'doc_date'               => 'required|date',
             'category'               => 'required|string|max:100',
