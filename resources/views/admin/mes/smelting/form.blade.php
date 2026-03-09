@@ -1657,7 +1657,7 @@
                 if (res?.ok) {
                     const d = await res.json();
                     console.log(d);
-                    document.getElementById('batch_no').value = d.data.batch_no;
+                    document.getElementById('batch_no').value = d.batch_no;
                 }
                 document.getElementById('pageTitle').textContent = 'Create Smelting Batch';
                 document.getElementById('pageSubtitle').textContent = 'Record new smelting batch log';

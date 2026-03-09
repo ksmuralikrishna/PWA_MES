@@ -21,6 +21,8 @@ Route::prefix('admin/mes/receiving')->name('admin.mes.receiving.')->group(functi
     Route::get('/',           [ReceivingWebController::class, 'index'])->name('index');
     Route::get('/create',     [ReceivingWebController::class, 'create'])->name('create');
     Route::get('/{id}/edit',  [ReceivingWebController::class, 'edit'])->name('edit');
+    Route::delete('/{id}',    [ReceivingWebController::class, 'destroy'])->name('destroy');
+
 });
 Route::prefix('admin/mes/acidTesting')->name('admin.mes.acidTesting.')->group(function () {
     Route::get('/', [AcidTestingWebController::class, 'index'])->name('index');

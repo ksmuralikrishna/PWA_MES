@@ -1353,12 +1353,12 @@
 
     const ACID_PRESENT = 'ACID PRESENT';
     const ULAB_OPTIONS = [
-      'USED GEL BATTERY/ABS',
-      'USED TRACTION BATTERY',
-      'ULAB - MC BATTERY (DRY)',
-      'ULAB - INDUSTRIAL',
-      ACID_PRESENT,
-    ];
+      { id: 1000024, name: 'USED GEL BATTERY/ABS' },
+      { id: 1000025, name: 'USED TRACTION BATTERY' },
+      { id: 1000026, name: 'ULAB - MC BATTERY (DRY)' },
+      { id: 1000028, name: 'ULAB - INDUSTRIAL' },
+      { id: 5, name: 'ACID_PRESENT' }
+  ];
 
     // ════════════════════════════════════════════════════════════════
     // INIT
@@ -1769,10 +1769,10 @@
       tr.dataset.idx = idx;
 
       const ulabOpts = ULAB_OPTIONS.map(u =>
-        `<option value="${u}"${(data.ulab_type ?? '') === u ? ' selected' : ''}>${u}</option>`
+        `<option value="${u.id}" ${(data.ulab_type ?? '') == u.id ? 'selected' : ''}>${u.name}</option>`
       ).join('');
-
-      const isAcid = (data.ulab_type ?? '') === ACID_PRESENT;
+      console.log("Acid",data.ulab_types);
+      const isAcid = (data.ulab_type ?? '') == 5;
       const cellDis = isAcid ? '' : 'cell-disabled';
       const avgPFVal = parseFloat(document.getElementById('avg_pallet_foreign_weight').value || 0).toFixed(3);
 
@@ -1824,7 +1824,7 @@
 
     function onUlabChange(idx) {
       const ulab = document.getElementById(`ulab_${idx}`).value;
-      const isAcid = ulab === ACID_PRESENT;
+      const isAcid = ulab == 5;
 
       ['initial', 'drained', 'diff', 'pct'].forEach(key => {
         const cell = document.getElementById(`cell_${key === 'pct' ? 'pct' : key}_${idx}`);
@@ -1890,8 +1890,8 @@
         const gross = parseFloat(document.getElementById(`gross_${idx}`)?.value) || 0;
         const net = parseFloat(document.getElementById(`net_${idx}`)?.value) || 0;
         const isAcid = ulab === ACID_PRESENT;
-        const initial = isAcid ? (parseFloat(document.getElementById(`initial_${idx}`)?.value) || 0) : 0;
-        const drained = isAcid ? (parseFloat(document.getElementById(`drained_${idx}`)?.value) || 0) : 0;
+        const initial = document.getElementById(`initial_${idx}`).value;
+        const drained = document.getElementById(`drained_${idx}`).value;
 
         if (!palletNo) { errs.push(`Row ${i + 1}: Pallet No required.`); valid = false; }
         if (!ulab) { errs.push(`Row ${i + 1}: ULAB Type required.`); valid = false; }
@@ -1902,8 +1902,8 @@
           ulab_type: ulab,
           gross_weight: gross,
           net_weight: net,
-          initial_weight: isAcid ? initial : null,
-          drained_weight: isAcid ? drained : null,
+          initial_weight: initial,
+          drained_weight: drained,
           remarks: ulab,
         });
       });
@@ -1929,6 +1929,7 @@
     // ════════════════════════════════════════════════════════════════
     async function saveForm(silent = false) {
       const payload = buildPayload();
+console.log("Payload", payload);
       if (!payload) return;
 
       const btn = document.getElementById('btnSave');

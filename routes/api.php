@@ -129,7 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
                ->middleware('module:acid-testing,can_edit');
           Route::delete('/{id}', [AcidTestingController::class, 'destroy'])
                ->middleware('module:acid-testing,can_delete');
-     });
+     });  
      // Route::prefix('acid-testings')->middleware('module:acid-testing')->group(function () {
      //      Route::get('/',                  [AcidTestingController::class, 'index']);
      //      Route::get('/prefill/{lotNo}',   [AcidTestingController::class, 'prefill']);
@@ -178,16 +178,28 @@ Route::middleware('auth:sanctum')->group(function () {
       
       });
     // ── Smelting ──────────────────────────────────────────────────
-    Route::prefix('smelting-batches')->group(function () {
-          Route::get('/',              [SmeltingBatchController::class, 'index']);
-          // Add this BEFORE the /{id} routes to avoid conflict
-          Route::get('/generate-batch-no', [SmeltingBatchController::class, 'generateBatchNo']);
-          Route::post('/',             [SmeltingBatchController::class, 'store']);
-          Route::get('/{id}',          [SmeltingBatchController::class, 'show']);
-          Route::put('/{id}',          [SmeltingBatchController::class, 'update']);
-          Route::delete('/{id}',       [SmeltingBatchController::class, 'destroy']);
-          Route::patch('/{id}/status', [SmeltingBatchController::class, 'updateStatus']);
+     Route::prefix('smelting-batches')->middleware('module:smelting')->group(function () {
+          Route::get('/',                      [SmeltingBatchController::class, 'index']);
+          Route::get('/generate-batch-no',     [SmeltingBatchController::class, 'generateBatchNo']);
+          Route::get('/bbsu-lots/{materialId}',[SmeltingBatchController::class, 'getBbsuLots']);
+          Route::post('/',                     [SmeltingBatchController::class, 'store']);
+          Route::get('/{id}',                  [SmeltingBatchController::class, 'show']);
+          Route::put('/{id}',                  [SmeltingBatchController::class, 'update']);
+          Route::delete('/{id}',               [SmeltingBatchController::class, 'destroy']);
+          Route::post('/{id}/autosave',        [SmeltingBatchController::class, 'autosave']);
+          Route::post('/{id}/submit',          [SmeltingBatchController::class, 'submit']);
+          Route::patch('/{id}/status',         [SmeltingBatchController::class, 'updateStatus'])->middleware('module:smeltings,can_edit');
      });
+//     Route::prefix('smelting-batches')->group(function () {
+//           Route::get('/',              [SmeltingBatchController::class, 'index']);
+//           // Add this BEFORE the /{id} routes to avoid conflict
+//           Route::get('/generate-batch-no', [SmeltingBatchController::class, 'generateBatchNo']);
+//           Route::post('/',             [SmeltingBatchController::class, 'store']);
+//           Route::get('/{id}',          [SmeltingBatchController::class, 'show']);
+//           Route::put('/{id}',          [SmeltingBatchController::class, 'update']);
+//           Route::delete('/{id}',       [SmeltingBatchController::class, 'destroy']);
+//           Route::patch('/{id}/status', [SmeltingBatchController::class, 'updateStatus']);
+//      });
      // ── Refining ──────────────────────────────────────────────────
      Route::prefix('refining')->middleware('module:refining')->group(function () {
 

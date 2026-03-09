@@ -163,7 +163,7 @@ class ReceivingController extends Controller
     {
         $receiving = Receiving::findOrFail($id);
 
-        if ($receiving->status >= 2) {
+        if ($receiving->status >= 1) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Cannot delete — this lot is already in downstream processing.',

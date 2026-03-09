@@ -25,4 +25,8 @@ class ReceivingWebController extends Controller
         // Pass id to view just in case, but form loads data via JS apiFetch
         return view('admin.mes.receiving.form', ['item_id' => $id]);
     }
+    public function destroy($id)
+    {
+        return redirect()->route('admin.mes.receiving.index');
+    }
 }

@@ -882,7 +882,7 @@
                         $statusLabel = $isSubmitted ? 'submitted' : 'draft';
                         $palletCount = $test->details->count();
                     @endphp
-                    <tr>
+                    <tr id="row-{{ $test->id }}">
                         <td>
                             <div class="lot-no">
                                 {{ $test->test_date ? \Carbon\Carbon::parse($test->test_date)->format('d M Y') : '—' }}
@@ -963,20 +963,19 @@
 
                                 {{-- DELETE (draft only) --}}
                                 @if(!$isSubmitted)
-                                    <form method="POST" action="{{ route('admin.mes.acidTesting.destroy', $test->id) }}"
-                                        onsubmit="return confirm('Delete lot {{ $test->lot_number }}? This will revert the receiving status.')"
-                                        style="display:contents">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="action-btn danger" title="Delete">
-                                            <svg viewBox="0 0 24 24">
-                                                <polyline points="3 6 5 6 21 6" />
-                                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                                                <path d="M10 11v6M14 11v6" />
-                                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                <button 
+                                    id="del-{{ $test->id }}"
+                                    class="action-btn danger" 
+                                    onclick="deleteBatch({{ $test->id }}, '{{ $test->lot_number }}', '/acid-testings/{{ $test->id }}')"
+                                    title="Delete">
+                                    {{ $test->status }}
+                                    <svg viewBox="0 0 24 24">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                        <path d="M10 11v6M14 11v6"/>
+                                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                                    </svg>
+                                </button>
                                 @endif
 
                             </div>

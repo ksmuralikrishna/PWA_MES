@@ -107,8 +107,16 @@ class AcidTestingController extends Controller
     // ── GET /api/acid-testings/{id} ───────────────────────────────
     public function show($id)
     {
-        $test = AcidTesting::with(['supplier', 'details', 'createdBy', 'updatedBy'])
-            ->findOrFail($id);
+        $test = AcidTesting::with([
+            'supplier',
+            'createdBy',
+            'updatedBy',
+            'details' => function ($query) {
+                $query->where('is_active', 1);
+            }
+        ])
+        ->where('is_active', 1)
+        ->findOrFail($id);
 
         return response()->json(['status' => 'ok', 'data' => $test]);
     }
@@ -253,17 +261,16 @@ class AcidTestingController extends Controller
     // ── Private: sync detail rows ─────────────────────────────────
     private function syncDetails(AcidTesting $header, array $details): void
     {
-        AcidTestPercentageDetail::where('acid_test_id', $header->id)->delete();
-
+        // AcidTestPercentageDetail::where('acid_test_id', $header->id)->delete();
+        AcidTestPercentageDetail::where('acid_test_id', $header->id)->update(['is_active' => 0]);
         foreach ($details as $row) {
-            $isAcid = strtolower(trim($row['ulab_type'] ?? '')) === 'acid present';
             $initial = (float) ($row['initial_weight'] ?? 0);
             $drained = (float) ($row['drained_weight'] ?? 0);
             $gross = (float) ($row['gross_weight'] ?? 0);
 
-            $weightDiff = $isAcid ? max(0, $initial - $drained) : 0;
-            // avg_acid_pct = (drained / initial) * 100  — as per spec
-            $avgAcidPct = ($isAcid && $initial > 0)
+            $weightDiff = max(0, $initial - $drained);
+
+            $avgAcidPct = ($initial > 0)
                 ? round(($drained / $initial) * 100, 2)
                 : 0;
 
@@ -274,8 +281,8 @@ class AcidTestingController extends Controller
                 'net_weight' => (float) ($row['net_weight'] ?? 0),
                 'ulab_type' => $row['ulab_type'],
                 'stock_code' => $row['stock_code'] ?? null,
-                'initial_weight' => $isAcid ? $initial : null,
-                'drained_weight' => $isAcid ? $drained : null,
+                'initial_weight' => $initial,
+                'drained_weight' => $drained,
                 'weight_difference' => $weightDiff,
                 'avg_acid_pct' => $avgAcidPct,
                 'remarks' => $row['remarks'] ?? null,
