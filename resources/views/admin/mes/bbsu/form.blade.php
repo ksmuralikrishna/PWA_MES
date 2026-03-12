@@ -12,7 +12,6 @@
 
 @push('styles')
 <style>
-  /* ── Buttons ── */
   .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; border-radius:9px;
          font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer;
          text-decoration:none; border:none; transition:all 0.2s; white-space:nowrap; }
@@ -26,23 +25,19 @@
   .btn-add:hover { background:var(--green-dark); transform:translateY(-1px); }
   .btn-add svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
 
-  /* ── Page header ── */
   .form-page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
   .form-page-header h2 { font-size:clamp(18px,2.5vw,23px); font-weight:800; color:var(--text); margin-bottom:3px; letter-spacing:-0.3px; }
   .form-page-header p { font-size:13px; color:var(--text-muted); }
 
-  /* ── Cards ── */
   .form-card { background:var(--white); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:20px; }
   .form-section-head { padding:13px 22px; background:var(--green-light); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
   .form-section-head svg { width:15px; height:15px; stroke:var(--green); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
   .form-section-head span { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); }
   .form-section-body { padding:26px 22px 30px; }
 
-  /* ── Grids ── */
   .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px 26px; }
   .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px 26px; }
 
-  /* ── Fields ── */
   .field { display:flex; flex-direction:column; }
   .field label { font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-mid); margin-bottom:7px; }
   .field label .req { color:var(--error,#dc2626); }
@@ -61,10 +56,8 @@
   .select-wrap::after { content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%); border-left:5px solid transparent; border-right:5px solid transparent; border-top:5px solid var(--text-muted); pointer-events:none; }
   .error-msg { margin-top:5px; font-size:11.5px; color:var(--error,#dc2626); }
 
-  /* ── Two-column layout ── */
   .main-cols { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
 
-  /* ── Input Rows Table ── */
   .input-rows-table { width:100%; border-collapse:collapse; }
   .input-rows-table thead th {
     font-size:10.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
@@ -98,7 +91,6 @@
   .totals-row td { background:var(--green-light); font-weight:700; font-size:13px; color:var(--green); padding:9px 12px; }
   .add-row-wrap { padding:14px 0 0; display:flex; justify-content:flex-end; }
 
-  /* ── Output Materials Table ── */
   .output-table { width:100%; border-collapse:collapse; }
   .output-table thead th { font-size:10.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
                             color:var(--green); background:var(--green-light); padding:10px 12px;
@@ -115,7 +107,6 @@
                outline:none; transition:border-color 0.2s,background 0.2s; }
   .out-input:focus { border-color:var(--green); background:var(--white); box-shadow:0 0 0 3px rgba(26,122,58,0.08); }
 
-  /* ── Power Consumption ── */
   .power-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 22px; }
 
   /* ── Sticky footer ── */
@@ -128,7 +119,24 @@
   .form-alert.error   { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; display:block; }
   .form-alert.success { background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; display:block; }
 
-  /* ── QTY Popup Modal ── */
+  /* ── Readonly notice ── */
+  .readonly-notice { background:#fef3c7; border:1px solid #fcd34d; color:#92400e;
+                     padding:10px 16px; border-radius:8px; font-size:12.5px; font-weight:600;
+                     margin-bottom:16px; display:none; }
+
+  /* ── Status badges ── */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 11px; border-radius:20px; font-size:11.5px; font-weight:700; }
+  .badge-draft     { background:#e0e7ff; color:#3730a3; }
+  .badge-submitted { background:#d1fae5; color:#065f46; }
+
+  /* ── Autosave dot ── */
+  .as-dot { width:7px; height:7px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .as-dot.saving { background:#d97706; animation:pulse .8s infinite; }
+  .as-dot.saved  { background:var(--green); }
+  .as-dot.error  { background:#dc2626; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── Modal ── */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:20px; }
   .modal-overlay.open { display:flex; }
   .modal-box { background:var(--white); border-radius:14px; width:100%; max-width:820px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.18); animation:modalIn 0.22s ease-out; }
@@ -154,7 +162,6 @@
   .assign-input:focus { border-color:var(--green); background:var(--white); box-shadow:0 0 0 3px rgba(26,122,58,0.08); }
   .avail-badge { display:inline-block; background:#d1fae5; color:#065f46; padding:3px 9px; border-radius:20px; font-size:12px; font-weight:600; }
 
-  /* ── Responsive ── */
   @media(max-width:900px) {
     .main-cols { grid-template-columns:1fr; }
     .form-grid-3 { grid-template-columns:1fr 1fr; }
@@ -173,10 +180,11 @@
 <!-- Page Header -->
 <div class="form-page-header">
     <div>
-        <h2>Battery Breaking &amp; Separation Unit Log</h2>
-        <p>Record input lot details, output materials and power consumption for a BBSU cycle</p>
+        <h2 id="pageTitle">Loading…</h2>
+        <p id="pageSubtitle">Record input lot details, output materials and power consumption for a BBSU cycle</p>
+        <div id="statusBadge" style="margin-top:6px"></div>
     </div>
-    <div style="display:flex;gap:10px;">
+    <div style="display:flex;gap:10px;" id="headerActions">
         <a href="{{ route('admin.mes.bbsu.index') }}" class="btn btn-outline btn-sm">
             <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
             Back to List
@@ -184,6 +192,7 @@
     </div>
 </div>
 
+<div id="readonlyNotice" class="readonly-notice">🔒 This batch has been submitted and is locked from editing.</div>
 <div id="formAlert" class="form-alert"></div>
 
 <!-- ═══════════════════════════════════════
@@ -201,7 +210,7 @@
                 <label for="doc_no">Doc No <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <input type="text" id="doc_no" class="no-icon" style="padding-left:38px;">
+                    <input type="text" id="doc_no" class="no-icon" style="padding-left:38px;" oninput="triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_doc_no"></div>
             </div>
@@ -210,7 +219,7 @@
                 <label for="start_time">Start Time <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <input type="datetime-local" id="start_time" required>
+                    <input type="datetime-local" id="start_time" required onchange="triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_start_time"></div>
             </div>
@@ -219,7 +228,7 @@
                 <label for="end_time">End Time <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <input type="datetime-local" id="end_time" required>
+                    <input type="datetime-local" id="end_time" required onchange="triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_end_time"></div>
             </div>
@@ -228,7 +237,7 @@
                 <label for="date">Date <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <input type="date" id="date" required>
+                    <input type="date" id="date" required onchange="triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_date"></div>
             </div>
@@ -237,7 +246,7 @@
                 <label for="category">Category <span class="req">*</span></label>
                 <div class="input-wrap select-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
-                    <select id="category" required>
+                    <select id="category" required onchange="triggerAutosave()">
                         <option value="">Select category...</option>
                         <option value="BBSU">BBSU</option>
                         <option value="MANUAL_CUTTING">Manual Cutting</option>
@@ -285,7 +294,7 @@
                 </table>
             </div>
             <div class="add-row-wrap">
-                <button class="btn-add" onclick="addInputRow()">
+                <button class="btn-add" id="btnAddRow" onclick="addInputRow()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     Add New
                 </button>
@@ -334,7 +343,7 @@
                 <label for="power_initial">Initial Reading <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    <input type="number" id="power_initial" step="0.01" placeholder="0.00" oninput="calcConsumption()">
+                    <input type="number" id="power_initial" step="0.01" placeholder="0.00" oninput="calcConsumption();triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_power_initial"></div>
             </div>
@@ -343,7 +352,7 @@
                 <label for="power_final">Final Reading <span class="req">*</span></label>
                 <div class="input-wrap">
                     <svg class="ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    <input type="number" id="power_final" step="0.01" placeholder="0.00" oninput="calcConsumption()">
+                    <input type="number" id="power_final" step="0.01" placeholder="0.00" oninput="calcConsumption();triggerAutosave()">
                 </div>
                 <div class="error-msg" id="err_power_final"></div>
             </div>
@@ -365,11 +374,18 @@
 ════════════════════════════════════════ -->
 <div class="form-actions">
     <a href="{{ route('admin.mes.bbsu.index') }}" class="btn btn-outline btn-sm">Cancel</a>
-    <div style="display:flex;gap:10px;align-items:center;">
-        <span id="autosaveStatus" style="font-size:12px;color:var(--text-muted);display:none;"></span>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span id="autosaveStatus" style="font-size:12px;color:var(--text-muted);display:none">
+            <span class="as-dot" id="asDot"></span>
+            <span id="asText">Saving…</span>
+        </span>
         <button type="button" class="btn btn-primary btn-sm" id="btnSave" onclick="saveForm()">
-          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          <span id="btnSaveLabel">Create Record</span>
+            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span id="btnSaveLabel">Create Record</span>
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" id="btnSubmit" onclick="submitRecord()" style="display:none">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit &amp; Lock
         </button>
     </div>
 </div>
@@ -423,7 +439,9 @@
 // ─── State ────────────────────────────────────────────────────────
 let rowCount       = 0;
 let activeRowIndex = null;
-let lotOptions     = []; // populated from API
+let lotOptions     = [];
+let isSubmitted    = false;
+let autosaveTimer;
 
 const PATH_PARTS = window.location.pathname.split('/').filter(Boolean);
 const isCreate   = PATH_PARTS[PATH_PARTS.length - 1] === 'create';
@@ -439,6 +457,7 @@ function showAlert(msg, type = 'error') {
     el.className = `form-alert ${type}`;
     el.textContent = msg;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (type === 'success') setTimeout(() => { el.className = 'form-alert'; el.textContent = ''; }, 4000);
 }
 
 function clearAlert() {
@@ -458,17 +477,64 @@ function showFieldErrors(errors) {
     });
 }
 
+function setDot(state, text) {
+    document.getElementById('asDot').className = `as-dot ${state}`;
+    const txt = document.getElementById('asText');
+    if (txt) txt.textContent = text;
+}
+
+function setReadonly(ro) {
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        if (ro) el.setAttribute('disabled', true);
+        else el.removeAttribute('disabled');
+    });
+    ['btnSave', 'btnSubmit', 'btnAddRow'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = ro ? 'none' : '';
+    });
+    document.querySelectorAll('.delete-btn').forEach(b => b.style.display = ro ? 'none' : '');
+    if (ro) document.getElementById('readonlyNotice').style.display = 'block';
+}
+
+// ─── Autosave ─────────────────────────────────────────────────────
+function setupAutosave() {
+    ['doc_no','start_time','end_time','date','category','power_initial','power_final'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', triggerAutosave);
+    });
+}
+
+function triggerAutosave() {
+    if (isCreate || isSubmitted) return;
+    setDot('saving', 'Saving…');
+    document.getElementById('autosaveStatus').style.display = 'inline';
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => saveForm(true), 2200);
+}
+
 // ─── Init ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('date').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('doc_no').value = 'BBSU-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
 
     await loadLots();
-    addInputRow();
     buildOutputTable();
 
-    if (!isCreate) {
+    if (isCreate) {
+        const res = await apiFetch('/bbsu-batches/generate-batch-no');
+        if (res?.ok) {
+            const d = await res.json();
+            document.getElementById('doc_no').value = d.batch_no ?? '';
+        } else {
+            document.getElementById('doc_no').value = 'BBSU-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
+        }
+        document.getElementById('pageTitle').textContent    = 'Create BBSU Batch';
+        document.getElementById('pageSubtitle').textContent = 'Record new BBSU batch log';
+        document.getElementById('breadcrumbTitle').textContent = 'Create Batch';
+        document.getElementById('btnSaveLabel').textContent = 'Create Batch';
+        addInputRow();
+    } else {
         await loadRecord();
+        setupAutosave();
     }
 });
 
@@ -477,10 +543,7 @@ async function loadLots() {
     const res = await apiFetch('/bbsu-batches/acid-test-lot-numbers');
     if (!res || !res.ok) return;
     const json = await res.json();
-    lotOptions = Array.isArray(json)
-        ? json
-        : (json.data?.data ?? json.data ?? []);
-    console.log("lotOptions", lotOptions);
+    lotOptions = Array.isArray(json) ? json : (json.data?.data ?? json.data ?? []);
 }
 
 function buildLotOptions() {
@@ -499,7 +562,7 @@ function addInputRow() {
     tr.innerHTML = `
         <td class="sr-cell">${rowCount}</td>
         <td class="select-cell">
-            <select class="row-select" id="lot_no_${rowCount}" onchange="onLotChange(${rowCount})">
+            <select class="row-select" id="lot_no_${rowCount}" onchange="onLotChange(${rowCount});triggerAutosave()">
                 ${buildLotOptions()}
             </select>
         </td>
@@ -511,7 +574,7 @@ function addInputRow() {
             <input type="hidden" id="qty_val_${rowCount}" value="">
         </td>
         <td>
-            <input type="text" class="row-input" id="acid_${rowCount}" placeholder="0.00" oninput="recalcTotals()">
+            <input type="text" class="row-input" id="acid_${rowCount}" placeholder="0.00" oninput="recalcTotals();triggerAutosave()">
         </td>
         <td>
             ${rowCount > 1
@@ -536,7 +599,7 @@ function removeRow(idx) {
     if (tr) {
         tr.style.transition = 'opacity 0.2s';
         tr.style.opacity = '0';
-        setTimeout(() => { tr.remove(); renumberRows(); recalcTotals(); }, 200);
+        setTimeout(() => { tr.remove(); renumberRows(); recalcTotals(); triggerAutosave(); }, 200);
     }
 }
 
@@ -567,39 +630,24 @@ function recalcTotals() {
     });
     document.getElementById('totalQty').value  = totalQty.toFixed(2);
     document.getElementById('totalAcid').value = acidCount ? (totalAcid / acidCount).toFixed(2) : '0.00';
-    calcOutputTotal(); // keep output yield in sync
+    calcOutputTotal();
 }
 
 // ─── QTY Modal ────────────────────────────────────────────────────
 async function openQtyModal(rowIdx) {
     activeRowIndex = rowIdx;
-
     const lotNo = document.getElementById(`lot_no_${rowIdx}`)?.value;
-    if (!lotNo) {
-        alert('Please select a Lot No first.');
-        return;
-    }
+    if (!lotNo) { alert('Please select a Lot No first.'); return; }
 
-    // ── Show loading state in modal ───────────────────────────────
     document.getElementById('qtyModalBody').innerHTML = `
-        <tr>
-            <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">
-                Loading lot data...
-            </td>
-        </tr>
+        <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading lot data...</td></tr>
     `;
     document.getElementById('qtyModal').classList.add('open');
 
-    // ── Fetch acid summary for selected lot ───────────────────────
     const res = await apiFetch(`/bbsu-batches/acid-summary/${lotNo}`);
-
     if (!res?.ok) {
         document.getElementById('qtyModalBody').innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align:center;padding:24px;color:#dc2626;">
-                    Failed to load data for lot <strong>${lotNo}</strong>.
-                </td>
-            </tr>
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:#dc2626;">Failed to load data for lot <strong>${lotNo}</strong>.</td></tr>
         `;
         return;
     }
@@ -609,18 +657,12 @@ async function openQtyModal(rowIdx) {
 
     if (!rows.length) {
         document.getElementById('qtyModalBody').innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">
-                    No data found for lot <strong>${lotNo}</strong>.
-                </td>
-            </tr>
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No data found for lot <strong>${lotNo}</strong>.</td></tr>
         `;
         return;
     }
 
-    // ── Render rows ───────────────────────────────────────────────
     const existing = document.getElementById(`qty_val_${rowIdx}`)?.value;
-
     document.getElementById('qtyModalBody').innerHTML = rows.map((l, i) => `
         <tr>
             <td><strong>${l.lot_no}</strong></td>
@@ -630,90 +672,44 @@ async function openQtyModal(rowIdx) {
             <td><span class="avail-badge">${parseFloat(l.net_weight || 0).toFixed(3)} ${l.unit ?? 'KG'}</span></td>
             <td>
                 <input type="number" class="assign-input" id="assign_${i}"
-                    placeholder="0.00" step="0.01" min="0"
-                    max="${l.net_weight ?? ''}"
-                    data-lot="${l.lot_no}"
-                    data-ulab="${l.ulab_type}"
+                    placeholder="0.00" step="0.01" min="0" max="${l.net_weight ?? ''}"
+                    data-lot="${l.lot_no}" data-ulab="${l.ulab_type}"
                     value="${rows.length === 1 && existing ? existing : ''}">
             </td>
         </tr>
     `).join('');
 }
-// function openQtyModal(rowIdx) {
-//     activeRowIndex = rowIdx;
-//     const lotNo    = document.getElementById(`lot_no_${rowIdx}`)?.value;
-//     const lot      = lotNo ? lotOptions.find(l => l.lot_no === lotNo) : null;
-//     const rows     = lot ? [lot] : lotOptions;
-
-//     document.getElementById('qtyModalBody').innerHTML = rows.map((l, i) => `
-//         <tr>
-//             <td><strong>${l.lot_no}</strong></td>
-//             <td>${l.material ?? l.material_name ?? '—'}</td>
-//             <td>${l.acid_pct ?? '—'}%</td>
-//             <td>${l.unit ?? 'MT'}</td>
-//             <td><span class="avail-badge">${parseFloat(l.available_qty || 0).toFixed(2)} ${l.unit ?? 'MT'}</span></td>
-//             <td><input type="number" class="assign-input" id="assign_${i}" placeholder="0.00" step="0.01" min="0" max="${l.available_qty ?? ''}" data-lot="${l.lot_no}"></td>
-//         </tr>
-//     `).join('');
-
-//     const existing = document.getElementById(`qty_val_${rowIdx}`)?.value;
-//     if (existing && rows.length === 1) document.getElementById('assign_0').value = existing;
-
-//     document.getElementById('qtyModal').classList.add('open');
-// }
 
 function closeQtyModal() {
     document.getElementById('qtyModal').classList.remove('open');
     activeRowIndex = null;
 }
 
-// function confirmQtyAssign() {
-//     if (activeRowIndex === null) return;
-//     let assigned = 0;
-//     document.querySelectorAll('#qtyModalBody .assign-input').forEach(inp => { assigned += parseFloat(inp.value) || 0; });
-
-//     document.getElementById(`qty_val_${activeRowIndex}`).value = assigned;
-//     const display = document.getElementById(`qty_display_${activeRowIndex}`);
-//     if (display) {
-//         display.textContent = assigned ? assigned.toFixed(2) + ' MT' : 'Enter qty...';
-//         display.style.color = assigned ? 'var(--text)' : 'var(--text-muted)';
-//     }
-//     recalcTotals();
-//     closeQtyModal();
-// }
 function confirmQtyAssign() {
     if (activeRowIndex === null) return;
-
-    let assigned  = 0;
-    let acidPct   = 0;
-
-    document.querySelectorAll('#qtyModalBody .assign-input').forEach((inp, i) => {
+    let assigned = 0, acidPct = 0;
+    document.querySelectorAll('#qtyModalBody .assign-input').forEach(inp => {
         const qty = parseFloat(inp.value) || 0;
         if (qty > 0) {
             assigned += qty;
-            // Get avg_acid_pct from the same row — 3rd <td> contains "XX.XX%"
             const row      = inp.closest('tr');
-            const acidCell = row.querySelectorAll('td')[2]; // Acid % column
+            const acidCell = row.querySelectorAll('td')[2];
             const cellText = acidCell?.textContent?.replace('%', '').trim();
             acidPct        = parseFloat(cellText) || 0;
         }
     });
 
-    // Fill qty hidden + display
     document.getElementById(`qty_val_${activeRowIndex}`).value = assigned;
     const display = document.getElementById(`qty_display_${activeRowIndex}`);
     if (display) {
         display.textContent = assigned ? assigned.toFixed(2) + ' KG' : 'Enter qty...';
         display.style.color = assigned ? 'var(--text)' : 'var(--text-muted)';
     }
-
-    // Auto-fill Acid % from the row where qty was entered
-    // if (acidPct > 0) {
-        const acidField = document.getElementById(`acid_${activeRowIndex}`);
-        if (acidField) acidField.value = acidPct.toFixed(2);
-    // }
+    const acidField = document.getElementById(`acid_${activeRowIndex}`);
+    if (acidField) acidField.value = acidPct.toFixed(2);
 
     recalcTotals();
+    triggerAutosave();
     closeQtyModal();
 }
 
@@ -727,8 +723,8 @@ function buildOutputTable() {
     tbody.innerHTML = outputMaterials.map(mat => `
         <tr>
             <td class="mat-name">${mat}</td>
-            <td><input type="number" class="out-input" placeholder="0.00" step="0.01" oninput="calcOutputTotal()"></td>
-            <td><input type="number" class="out-input" placeholder="0.00" step="0.01"></td>
+            <td><input type="number" class="out-input" placeholder="0.00" step="0.01" oninput="calcOutputTotal();triggerAutosave()"></td>
+            <td><input type="number" class="out-input" placeholder="0.00" step="0.01" oninput="triggerAutosave()"></td>
         </tr>
     `).join('') + `
         <tr class="total-row">
@@ -759,126 +755,151 @@ function calcConsumption() {
     document.getElementById('power_consumption').value = final_ >= initial ? (final_ - initial).toFixed(2) : '';
 }
 
-// ─── Collect form data ────────────────────────────────────────────
-function getFormData() {
-    const inputLots = [];
-    document.querySelectorAll('#inputRowsBody tr').forEach(tr => {
-        const idx = tr.dataset.rowIndex;
-        inputLots.push({
-            lot_no  : document.getElementById(`lot_no_${idx}`)?.value,
-            qty     : document.getElementById(`qty_val_${idx}`)?.value,
-            acid_pct: document.getElementById(`acid_${idx}`)?.value,
-        });
+// ─── Build Payload ────────────────────────────────────────────────
+function buildPayload() {
+    const batchNo   = document.getElementById('doc_no').value?.trim();
+    const date      = document.getElementById('date').value;
+    const category  = document.getElementById('category').value;
+    const startTime = document.getElementById('start_time').value;
+    const endTime   = document.getElementById('end_time').value;
+
+    const inputDetails = [];
+    document.querySelectorAll('#inputRowsBody tr').forEach((tr, i) => {
+        const idx   = tr.dataset.rowIndex;
+        const lotNo = document.getElementById(`lot_no_${idx}`)?.value?.trim();
+        const qty   = parseFloat(document.getElementById(`qty_val_${idx}`)?.value) || 0;
+        const acid  = parseFloat(document.getElementById(`acid_${idx}`)?.value)    || 0;
+        inputDetails.push({ lot_no: lotNo, quantity: qty, acid_percentage: acid });
     });
 
-    const outputMaterialsData = [];
+    const OUTPUT_KEYS = ['metallic','paste','fines','pp_chips','abs_chips','separator','battery_plates','terminals','acid'];
+    const outputMaterial = {};
     document.querySelectorAll('#outputTableBody tr:not(.total-row)').forEach((tr, i) => {
-        const inputs = tr.querySelectorAll('input');
-        outputMaterialsData.push({
-            material : outputMaterials[i],
-            qty      : inputs[0]?.value,
-            yield_pct: inputs[1]?.value,
-        });
+        const inputs = tr.querySelectorAll('input[type="number"]');
+        const key    = OUTPUT_KEYS[i];
+        outputMaterial[`${key}_qty`]   = parseFloat(inputs[0]?.value) || 0;
+        outputMaterial[`${key}_yield`] = parseFloat(inputs[1]?.value) || 0;
     });
+
+    const initialPower = parseFloat(document.getElementById('power_initial').value)     || 0;
+    const finalPower   = parseFloat(document.getElementById('power_final').value)       || 0;
+    const totalPower   = parseFloat(document.getElementById('power_consumption').value) || 0;
 
     return {
-        doc_no           : document.getElementById('doc_no').value,
-        start_time       : document.getElementById('start_time').value,
-        end_time         : document.getElementById('end_time').value,
-        date             : document.getElementById('date').value,
-        category         : document.getElementById('category').value,
-        power_initial    : document.getElementById('power_initial').value,
-        power_final      : document.getElementById('power_final').value,
-        power_consumption: document.getElementById('power_consumption').value,
-        input_lots       : inputLots,
-        output_materials : outputMaterialsData,
+        batch_no   : batchNo,
+        doc_date   : date,
+        category   : category,
+        start_time : startTime,
+        end_time   : endTime,
+        input_details    : inputDetails,
+        output_material  : outputMaterial,
+        power_consumption: { initial_power: initialPower, final_power: finalPower, total_power_consumption: totalPower },
     };
 }
 
 // ─── Save ─────────────────────────────────────────────────────────
-async function saveRecord() {
-    clearAlert();
-    clearFieldErrors();
-
+async function saveForm(silent = false) {
+    const payload = buildPayload();
     const btn = document.getElementById('btnSave');
-    btn.disabled = true;
-    document.getElementById('btnSaveLabel').textContent = 'Saving...';
+    if (!silent) btn.disabled = true;
 
     const method   = isCreate ? 'POST' : 'PUT';
-    const endpoint = isCreate ? '/bbsu-logs' : `/bbsu-logs/${recordId}`;
+    const endpoint = isCreate ? '/bbsu-batches' : `/bbsu-batches/${recordId}`;
 
-    const res = await apiFetch(endpoint, {
-        method,
-        body: JSON.stringify(getFormData()),
-    });
-
-    btn.disabled = false;
-    document.getElementById('btnSaveLabel').textContent = isCreate ? 'Create Record' : 'Save Record';
-
+    const res = await apiFetch(endpoint, { method, body: JSON.stringify(payload) });
+    if (!silent) btn.disabled = false;
     if (!res) return;
+
     const data = await res.json();
 
     if (res.ok && data.status === 'ok') {
-        if (isCreate) {
-            window.location.href = `{{ url('/admin/mes/bbsu') }}/${data.data.id}/edit`;
+        if (!silent) {
+            if (isCreate) {
+                window.location.href = `{{ url('/admin/mes/bbsu') }}/${data.data.id}/edit`;
+            } else {
+                showAlert('Record saved successfully.', 'success');
+            }
         } else {
-            showAlert('Record saved successfully.', 'success');
+            setDot('saved', 'Autosaved at ' + new Date().toLocaleTimeString());
+            setTimeout(() => document.getElementById('autosaveStatus').style.display = 'none', 4000);
         }
     } else if (res.status === 422) {
         showFieldErrors(data.errors ?? {});
-        showAlert(data.message ?? 'Please fix the errors below.');
+        if (!silent) showAlert(data.message ?? 'Please fix the errors below.');
     } else {
-        showAlert(data.message ?? 'Something went wrong. Please try again.');
+        if (!silent) showAlert(data.message ?? 'Something went wrong.');
     }
 }
 
-// ─── Load existing record for edit ───────────────────────────────
+// ─── Submit & Lock ────────────────────────────────────────────────
+async function submitRecord() {
+    if (!confirm('Submit this batch? It will be locked from further edits.')) return;
+    await saveForm(true);
+    const res = await apiFetch(`/bbsu-batches/${recordId}/submit`, { method: 'POST', body: '{}' });
+    if (res?.ok) {
+        showAlert('Batch submitted and locked.', 'success');
+        // setTimeout(() => window.location.href = '{{ route("admin.mes.bbsu.index") }}', 1400);
+    } else {
+        const d = await res?.json();
+        showAlert(d?.message ?? 'Submit failed.');
+    }
+}
+// async function submitRecord() {
+//       if (!confirm('Submit this record? It will be locked from further edits.')) return;
+//       await saveForm(true);
+//       const res = await apiFetch(`/bbsu-batches/${recordId}/status`, {
+//         method: 'PATCH', body: JSON.stringify({ status: 1 }),
+//       });
+//       if (res?.ok) {
+//         showAlert('Submitted successfully.', 'success');
+//         // setTimeout(() => window.location.href = '{{ route("admin.mes.bbsu.index") }}', 1500);
+//       } else {
+//         const d = await res?.json();
+//         showAlert(d?.message ?? 'Submit failed.');
+//       }
+//     }
+
+// ─── Load Record (edit mode) ──────────────────────────────────────
 async function loadRecord() {
     const res = await apiFetch(`/bbsu-batches/${recordId}`);
     if (!res?.ok) { showAlert('Failed to load record.'); return; }
 
     const { data } = await res.json();
+    isSubmitted = data.status === 1;
 
-    // ── Primary Details ───────────────────────────────────────────
+    // Primary Details
     document.getElementById('doc_no').value     = data.batch_no              ?? '';
     document.getElementById('date').value       = data.doc_date?.slice(0,10) ?? '';
     document.getElementById('category').value   = data.category              ?? '';
     document.getElementById('start_time').value = formatForDatetimeLocal(data.start_time);
     document.getElementById('end_time').value   = formatForDatetimeLocal(data.end_time);
 
-    // ── Input Lots (hasMany) ──────────────────────────────────────
-    // Clear existing rows first
+    // Input Lots
     document.getElementById('inputRowsBody').innerHTML = '';
     rowCount = 0;
-
     if (data.input_details?.length) {
         data.input_details.forEach(detail => {
             addInputRow();
             const idx = rowCount;
-            document.getElementById(`lot_no_${idx}`).value  = detail.lot_no          ?? '';
-            document.getElementById(`acid_${idx}`).value    = detail.acid_percentage  ?? '';
-
-            // Set qty hidden value + display button text
+            document.getElementById(`lot_no_${idx}`).value = detail.lot_no         ?? '';
+            document.getElementById(`acid_${idx}`).value   = detail.acid_percentage ?? '';
             const qty = parseFloat(detail.quantity) || 0;
-            document.getElementById(`qty_val_${idx}`).value     = qty;
+            document.getElementById(`qty_val_${idx}`).value = qty;
             const display = document.getElementById(`qty_display_${idx}`);
             if (display) {
-                display.textContent = qty ? qty.toFixed(2) + ' MT' : 'Enter qty...';
+                display.textContent = qty ? qty.toFixed(2) + ' KG' : 'Enter qty...';
                 display.style.color = qty ? 'var(--text)' : 'var(--text-muted)';
             }
         });
         recalcTotals();
     } else {
-        addInputRow(); // always keep at least one row
+        addInputRow();
     }
 
-    // ── Output Materials (hasOne, flat columns) ───────────────────
+    // Output Materials
     const om = data.output_material;
     if (om) {
-        const OUTPUT_KEYS = [
-            'metallic', 'paste', 'fines', 'pp_chips', 'abs_chips',
-            'separator', 'battery_plates', 'terminals', 'acid',
-        ];
+        const OUTPUT_KEYS = ['metallic','paste','fines','pp_chips','abs_chips','separator','battery_plates','terminals','acid'];
         document.querySelectorAll('#outputTableBody tr:not(.total-row)').forEach((tr, i) => {
             const inputs = tr.querySelectorAll('input[type="number"]');
             const key    = OUTPUT_KEYS[i];
@@ -888,168 +909,39 @@ async function loadRecord() {
         calcOutputTotal();
     }
 
-    // ── Power Consumption (hasOne) ────────────────────────────────
+    // Power Consumption
     const pc = data.power_consumption;
     if (pc) {
-        document.getElementById('power_initial').value     = parseFloat(pc.initial_power)             || '';
-        document.getElementById('power_final').value       = parseFloat(pc.final_power)               || '';
-        document.getElementById('power_consumption').value = parseFloat(pc.total_power_consumption)   || '';
+        document.getElementById('power_initial').value     = parseFloat(pc.initial_power)           || '';
+        document.getElementById('power_final').value       = parseFloat(pc.final_power)             || '';
+        document.getElementById('power_consumption').value = parseFloat(pc.total_power_consumption) || '';
     }
 
-    // ── Page UI ───────────────────────────────────────────────────
+    // Page UI
+    document.getElementById('pageTitle').textContent       = 'Edit BBSU Batch';
+    document.getElementById('pageSubtitle').textContent    = `Batch: ${data.batch_no}`;
     document.getElementById('breadcrumbTitle').textContent = 'Edit Record';
-    document.getElementById('btnSaveLabel').textContent    = 'Save Record';
-}
-async function saveForm(silent = false) {
-    // clearAlert();
-    // clearFieldErrors();
-    const payload = buildPayload();
-    console.log(payload);
-    const btn = document.getElementById('btnSave');
-    btn.disabled = true;
+    document.getElementById('btnSaveLabel').textContent    = 'Save Draft';
 
-    const method   = isCreate ? 'POST' : 'PUT';
-    const endpoint = isCreate ? '/bbsu-batches' : `/bbsu-batches/${recordId}`;
-
-    const res = await apiFetch(endpoint, {
-        method,
-        body: JSON.stringify(payload),
-    });
-
-    btn.disabled = false;
-
-    if (!res) return;
-
-    const data = await res.json();
-
-    if (res.ok && data.status === 'ok') {
-        if (!silent) {
-            if (isCreate) {
-                // Redirect to edit page of newly created record
-                window.location.href = `{{ url('/admin/mes/bbsu') }}/${data.data.id}/edit`;
-            } else {
-                showAlert('Record saved successfully.', 'success');
-            }
-        } else {
-            // Autosave — just update status text
-            const status = document.getElementById('autosaveStatus');
-            status.style.display = 'inline';
-            status.textContent = 'Autosaved at ' + new Date().toLocaleTimeString();
-            setTimeout(() => status.style.display = 'none', 5000);
-        }
-    } else if (res.status === 422) {
-        showFieldErrors(data.errors ?? {});
-        if (!silent) showAlert(data.message ?? 'Please fix the errors below.');
+    const badge = document.getElementById('statusBadge');
+    if (isSubmitted) {
+        badge.innerHTML = '<span class="badge badge-submitted">● Submitted</span>';
+        setReadonly(true);
+        document.getElementById('btnSubmit').style.display = 'none';
     } else {
-        if (!silent) showAlert(data.message ?? 'Something went wrong.');
+        badge.innerHTML = '<span class="badge badge-draft">● Draft</span>';
+        document.getElementById('btnSubmit').style.display = 'inline-flex';
     }
 }
-function buildPayload() {
-    const errors = [];
-    let valid = true;
 
-    // ── 1. Primary Details ────────────────────────────────────────
-    const batchNo   = document.getElementById('doc_no').value?.trim();
-    const date      = document.getElementById('date').value;
-    const category  = document.getElementById('category').value;
-    const startTime = document.getElementById('start_time').value;
-    const endTime   = document.getElementById('end_time').value;
-
-    if (!batchNo)   { errors.push('Doc No is required.');     valid = false; }
-    if (!date)      { errors.push('Date is required.');        valid = false; }
-    if (!category)  { errors.push('Category is required.');    valid = false; }
-    if (!startTime) { errors.push('Start Time is required.');  valid = false; }
-    if (!endTime)   { errors.push('End Time is required.');    valid = false; }
-
-    // ── 2. Input Details → bbsu_input_details (hasMany) ──────────
-    const inputDetails = [];
-    document.querySelectorAll('#inputRowsBody tr').forEach((tr, i) => {
-        const idx    = tr.dataset.rowIndex;
-        const lotNo  = document.getElementById(`lot_no_${idx}`)?.value?.trim();
-        const qty    = parseFloat(document.getElementById(`qty_val_${idx}`)?.value) || 0;
-        const acid   = parseFloat(document.getElementById(`acid_${idx}`)?.value)    || 0;
-
-        if (!lotNo) { errors.push(`Input row ${i + 1}: Lot No is required.`);     valid = false; }
-        if (qty <= 0) { errors.push(`Input row ${i + 1}: Quantity must be > 0.`); valid = false; }
-
-        inputDetails.push({
-            lot_no          : lotNo,
-            quantity        : qty,
-            acid_percentage : acid,
-        });
-    });
-
-    // ── 3. Output Material → bbsu_output_materials (hasOne, flat) ─
-    // Matches model fillable columns exactly:
-    // metallic, paste, fines, pp_chips, abs_chips,
-    // separator, battery_plates, terminals, acid
-    const OUTPUT_KEYS = [
-        'metallic',
-        'paste',
-        'fines',
-        'pp_chips',
-        'abs_chips',
-        'separator',
-        'battery_plates',
-        'terminals',
-        'acid',
-    ];
-
-    const outputMaterial = {};
-    document.querySelectorAll('#outputTableBody tr:not(.total-row)').forEach((tr, i) => {
-        const inputs = tr.querySelectorAll('input[type="number"]');
-        const key    = OUTPUT_KEYS[i];
-        outputMaterial[`${key}_qty`]   = parseFloat(inputs[0]?.value) || 0;
-        outputMaterial[`${key}_yield`] = parseFloat(inputs[1]?.value) || 0;
-    });
-
-    // ── 4. Power Consumption → bbsu_power_consumption (hasOne) ───
-    const initialPower = parseFloat(document.getElementById('power_initial').value)     || 0;
-    const finalPower   = parseFloat(document.getElementById('power_final').value)       || 0;
-    const totalPower   = parseFloat(document.getElementById('power_consumption').value) || 0;
-
-    if (initialPower <= 0) { errors.push('Initial power reading is required.'); valid = false; }
-    if (finalPower   <= 0) { errors.push('Final power reading is required.');   valid = false; }
-
-    // ── Validation gate ───────────────────────────────────────────
-      // if (!valid) {
-      //     showAlert(errors.join('\n'), 'error');
-      //     return null;
-      // }
-
-    // ── Final payload ─────────────────────────────────────────────
-    return {
-        // BbsuBatch
-        batch_no   : batchNo,
-        doc_date   : date,
-        category   : category,
-        start_time : startTime,
-        end_time   : endTime,
-
-        // BbsuInputDetail[] — hasMany
-        input_details: inputDetails,
-
-        // BbsuOutputMaterial — hasOne, flat columns
-        output_material: outputMaterial,
-
-        // BbsuPowerConsumption — hasOne
-        power_consumption: {
-            initial_power           : initialPower,
-            final_power             : finalPower,
-            total_power_consumption : totalPower,
-        },
-    };
-}
 function formatForDatetimeLocal(isoString) {
     if (!isoString) return '';
-    const d = new Date(isoString); // parse ISO string
-    // convert to local time string in format YYYY-MM-DDTHH:MM
+    const d    = new Date(isoString);
     const yyyy = d.getFullYear();
     const mm   = String(d.getMonth() + 1).padStart(2, '0');
     const dd   = String(d.getDate()).padStart(2, '0');
     const hh   = String(d.getHours()).padStart(2, '0');
     const min  = String(d.getMinutes()).padStart(2, '0');
-
     return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 }
 </script>

@@ -1,15 +1,12 @@
 <?php
-// ── app/Models/Material.php ──────────────────────────────────────
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Material extends Model
 {
-    use HasFactory, SoftDeletes;
+    protected $table = 'materials';
 
     protected $fillable = [
         'material_code',
@@ -19,6 +16,7 @@ class Material extends Model
         'category',
         'section',
         'unit',
+        'status',
         'is_active',
         'created_by',
         'updated_by',
@@ -28,13 +26,14 @@ class Material extends Model
         'is_active' => 'boolean',
     ];
 
-    public function receivings()
-    {
-        return $this->hasMany(Receiving::class);
-    }
-
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by')->select('id', 'name');
+        return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
 }

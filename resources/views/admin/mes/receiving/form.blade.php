@@ -205,6 +205,9 @@
                             <select id="unit" name="unit" required>
                                 <option value="MT">Metric Tons (MT)</option>
                                 <option value="KG">Kilograms (KG)</option>
+                                <option value="LTR">Liter (LTR)</option>
+                                <option value="NOS">Numbers (NOS)</option>
+                                <option value="BOX">Box</option>
                             </select>
                         </div>
                         <div class="error-msg" id="err_unit"></div>

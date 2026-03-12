@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ModuleController;
-use App\Http\Controllers\Api\SupplierController;
-use App\Http\Controllers\Api\MaterialController;
+use App\Http\Controllers\Api\SupplierBatchController;
+use App\Http\Controllers\Api\MaterialBatchController;
 use App\Http\Controllers\Api\ReceivingController;
 use App\Http\Controllers\Api\AcidTestingController;
 use App\Http\Controllers\Api\AcidStockConditionController;
@@ -67,20 +67,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
      // ── Suppliers (reference data) ────────────────────────────────────
      Route::prefix('suppliers')->group(function () {
-          Route::get('/',        [SupplierController::class, 'index']);
-          Route::get('/{id}',    [SupplierController::class, 'show']);
-          Route::post('/',       [SupplierController::class, 'store']);
-          Route::put('/{id}',    [SupplierController::class, 'update']);
-          Route::delete('/{id}', [SupplierController::class, 'destroy']);
+          Route::get('/',        [SupplierBatchController::class, 'index']);
+          Route::get('/{id}',    [SupplierBatchController::class, 'show']);
+          Route::post('/',       [SupplierBatchController::class, 'store']);
+          Route::put('/{id}',    [SupplierBatchController::class, 'update']);
+          Route::delete('/{id}', [SupplierBatchController::class, 'destroy']);
      });
      
      // ── Materials (reference data) ────────────────────────────────────
      Route::prefix('materials')->group(function () {
-          Route::get('/',        [MaterialController::class, 'index']);
-          Route::get('/{id}',    [MaterialController::class, 'show']);
-          Route::post('/',       [MaterialController::class, 'store']);
-          Route::put('/{id}',    [MaterialController::class, 'update']);
-          Route::delete('/{id}', [MaterialController::class, 'destroy']);
+          Route::get('/',        [MaterialBatchController::class, 'index']);
+          Route::get('/{id}',    [MaterialBatchController::class, 'show']);
+          Route::post('/',       [MaterialBatchController::class, 'store']);
+          Route::put('/{id}',    [MaterialBatchController::class, 'update']);
+          Route::delete('/{id}', [MaterialBatchController::class, 'destroy']);
      });
 
  
@@ -156,6 +156,7 @@ Route::middleware('auth:sanctum')->group(function () {
           // reports or helper routes FIRST
           Route::get('/acid-summary/{lotNo}', [BbsuBatchController::class, 'acidSummaryByLot']);
           Route::get('/acid-test-lot-numbers', [BbsuBatchController::class, 'lotNumbers']);
+          Route::post('/{id}/submit', [BbsuBatchController::class, 'submit']);
       
           // show batch
           Route::get('/{id}', [BbsuBatchController::class, 'show']);
@@ -175,6 +176,7 @@ Route::middleware('auth:sanctum')->group(function () {
           // delete
           Route::delete('/{id}', [BbsuBatchController::class, 'destroy'])
               ->middleware('module:bbsu,can_delete');
+              
       
       });
     // ── Smelting ──────────────────────────────────────────────────
@@ -190,16 +192,7 @@ Route::middleware('auth:sanctum')->group(function () {
           Route::post('/{id}/submit',          [SmeltingBatchController::class, 'submit']);
           Route::patch('/{id}/status',         [SmeltingBatchController::class, 'updateStatus'])->middleware('module:smeltings,can_edit');
      });
-//     Route::prefix('smelting-batches')->group(function () {
-//           Route::get('/',              [SmeltingBatchController::class, 'index']);
-//           // Add this BEFORE the /{id} routes to avoid conflict
-//           Route::get('/generate-batch-no', [SmeltingBatchController::class, 'generateBatchNo']);
-//           Route::post('/',             [SmeltingBatchController::class, 'store']);
-//           Route::get('/{id}',          [SmeltingBatchController::class, 'show']);
-//           Route::put('/{id}',          [SmeltingBatchController::class, 'update']);
-//           Route::delete('/{id}',       [SmeltingBatchController::class, 'destroy']);
-//           Route::patch('/{id}/status', [SmeltingBatchController::class, 'updateStatus']);
-//      });
+
      // ── Refining ──────────────────────────────────────────────────
      Route::prefix('refining')->middleware('module:refining')->group(function () {
 
@@ -215,9 +208,18 @@ Route::middleware('auth:sanctum')->group(function () {
           Route::post('/{id}/autosave', [RefiningBatchController::class, 'autosave']);
           Route::post('/{id}/submit', [RefiningBatchController::class, 'submit']);
           Route::delete('/{id}', [RefiningBatchController::class, 'destroy']);
-
-
      });
-
+     Route::prefix('material')->group(function () {
+          Route::get('/',        [MaterialBatchController::class, 'index']);
+          Route::post('/',       [MaterialBatchController::class, 'store']);
+          Route::put('/{id}',    [MaterialBatchController::class, 'update']);
+          Route::delete('/{id}', [MaterialBatchController::class, 'destroy']);
+     });
+     Route::prefix('supplier')->group(function () {
+          Route::get('/',        [SupplierBatchController::class, 'index']);
+          Route::post('/',       [SupplierBatchController::class, 'store']);
+          Route::put('/{id}',    [SupplierBatchController::class, 'update']);
+          Route::delete('/{id}', [SupplierBatchController::class, 'destroy']);
+     });
 });
 

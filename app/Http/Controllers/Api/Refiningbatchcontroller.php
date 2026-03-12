@@ -243,7 +243,7 @@ class RefiningBatchController extends Controller
         if ($batch->status === 'submitted') {
             return response()->json(['status' => 'error', 'message' => 'Already submitted.'], 422);
         }
-        $batch->update(['status' => 'submitted', 'updated_by' => auth()->id()]);
+        $batch->update(['status' => 1, 'updated_by' => auth()->id()]);
         return response()->json(['status' => 'ok', 'message' => 'Batch submitted and locked.']);
     }
 
@@ -408,7 +408,7 @@ class RefiningBatchController extends Controller
                     'smelting_batch_id' => $row['smelting_batch_id'] ?? null,
                     'smelting_batch_no' => $row['smelting_batch_no'] ?? null,
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -429,7 +429,7 @@ class RefiningBatchController extends Controller
                     'smelting_batch_id' => $row['smelting_batch_id'] ?? null,
                     'smelting_batch_no' => $row['smelting_batch_no'] ?? null,
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -461,7 +461,7 @@ class RefiningBatchController extends Controller
                     'end_time' => $row['end_time'] ?? null,
                     'total_time' => $totalTime,
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -481,7 +481,7 @@ class RefiningBatchController extends Controller
                     'block_sl_no' => $row['block_sl_no'] ?? 0,
                     'block_weight' => $row['block_weight'],
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -500,7 +500,7 @@ class RefiningBatchController extends Controller
                     'material_id' => $row['material_id'],
                     'total_qty' => $row['total_qty'] ?? 0,
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -520,7 +520,7 @@ class RefiningBatchController extends Controller
                     'block_sl_no' => $row['block_sl_no'] ?? 0,
                     'block_weight' => $row['block_weight'],
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);
@@ -539,7 +539,7 @@ class RefiningBatchController extends Controller
                     'material_id' => $row['material_id'],
                     'total_qty' => $row['total_qty'] ?? 0,
                     'is_active' => true,
-                    'status' => 'active',
+                    'status' => 0,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]);

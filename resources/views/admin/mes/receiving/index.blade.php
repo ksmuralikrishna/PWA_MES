@@ -946,9 +946,7 @@
                                 
 
                                 {{-- DELETE (draft only) --}}
-                                
                                 @if($test->status == '0')
-                                
                                 <button 
                                     id="del-{{ $test->id }}"
                                     class="action-btn danger" 
@@ -962,7 +960,7 @@
                                         <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                                     </svg>
                                 </button>
-                            @endif
+                                @endif
                             </div>
                         </td>
                     </tr>

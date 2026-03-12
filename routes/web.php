@@ -4,6 +4,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\AuthWebController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\SupplierWebController;
+use App\Http\Controllers\Web\MaterialWebController;
 use App\Http\Controllers\Web\ReceivingWebController;
 use App\Http\Controllers\Web\BbsuWebController;
 use App\Http\Controllers\Web\AcidTestingWebController;
@@ -16,6 +18,25 @@ Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login.get')
 // Authenticated pages
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 Route::post('/logout',   [AuthWebController::class, 'logout'])->name('logout');
+
+Route::prefix('admin/mes/supplier')->name('admin.mes.supplier.')->group(function () {
+    Route::get('/',           [SupplierWebController::class, 'index'])->name('index');
+    Route::get('/create',     [SupplierWebController::class, 'create'])->name('create');
+    Route::post('/',          [SupplierWebController::class, 'store'])->name('store');        // ✅ Add this
+    Route::get('/{id}/edit',  [SupplierWebController::class, 'edit'])->name('edit');
+    Route::put('/{id}',       [SupplierWebController::class, 'update'])->name('update');    // ✅ Add this
+    Route::delete('/{id}',    [SupplierWebController::class, 'destroy'])->name('destroy');
+});
+
+// ── Materials ───────────────────────────────────────────────────
+Route::prefix('admin/mes/material')->name('admin.mes.material.')->group(function () {
+    Route::get('/',           [MaterialWebController::class, 'index'])->name('index');
+    Route::get('/create',     [MaterialWebController::class, 'create'])->name('create');
+    Route::post('/',          [MaterialWebController::class, 'store'])->name('store');        // ✅ Add this
+    Route::get('/{id}/edit',  [MaterialWebController::class, 'edit'])->name('edit');
+    Route::put('/{id}',       [MaterialWebController::class, 'update'])->name('update');    // ✅ Add this
+    Route::delete('/{id}',    [MaterialWebController::class, 'destroy'])->name('destroy');
+});
 
 Route::prefix('admin/mes/receiving')->name('admin.mes.receiving.')->group(function () {
     Route::get('/',           [ReceivingWebController::class, 'index'])->name('index');

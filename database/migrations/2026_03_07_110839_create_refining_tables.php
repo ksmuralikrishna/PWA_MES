@@ -30,11 +30,12 @@ return new class extends Migration {
             // Totals
             $table->decimal('total_process_time', 12, 3)->nullable();
             // Meta
-            $table->string('status', 20)->default('draft');
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_raw_materials ────────────────────────────────────────
@@ -46,11 +47,13 @@ return new class extends Migration {
             // Smelting source tracking (for QTY popup)
             $table->unsignedBigInteger('smelting_batch_id')->nullable();
             $table->string('smelting_batch_no', 30)->nullable();
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_chemicals ────────────────────────────────────────────
@@ -62,11 +65,13 @@ return new class extends Migration {
             // Smelting source tracking
             $table->unsignedBigInteger('smelting_batch_id')->nullable();
             $table->string('smelting_batch_no', 30)->nullable();
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_process_details ──────────────────────────────────────
@@ -77,11 +82,13 @@ return new class extends Migration {
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->decimal('total_time', 10, 2)->default(0);
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_finished_goods_blocks ────────────────────────────────
@@ -91,11 +98,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('material_id')->nullable();
             $table->integer('block_sl_no')->default(0);
             $table->decimal('block_weight', 12, 3)->default(0);
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_finished_goods_summary ──────────────────────────────
@@ -104,11 +113,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('refining_batch_id');
             $table->unsignedBigInteger('material_id')->nullable();
             $table->decimal('total_qty', 12, 3)->default(0);
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_dross_blocks ─────────────────────────────────────────
@@ -118,11 +129,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('material_id')->nullable();
             $table->integer('block_sl_no')->default(0);
             $table->decimal('block_weight', 12, 3)->default(0);
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // ── refining_dross_summary ────────────────────────────────────────
@@ -131,11 +144,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('refining_batch_id');
             $table->unsignedBigInteger('material_id')->nullable();
             $table->decimal('total_qty', 12, 3)->default(0);
+
+            $table->integer('status')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->string('status', 20)->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('created_by');
+            $table->integer('updated_by')->default(null)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

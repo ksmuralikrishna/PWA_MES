@@ -2100,8 +2100,12 @@
             });
 
             const dateVal = document.getElementById('date').value;
-            const stVal = document.getElementById('start_time').value;
-            const etVal = document.getElementById('end_time').value;
+
+            const stRaw = document.getElementById('start_time').value;
+            const etRaw = document.getElementById('end_time').value;
+
+            const stVal = stRaw ? stRaw.split('T')[1] : null;
+            const etVal = etRaw ? etRaw.split('T')[1] : null;
 
             return {
                 batch_no: document.getElementById('batch_no').value,

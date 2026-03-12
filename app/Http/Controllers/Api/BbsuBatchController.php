@@ -290,20 +290,43 @@ class BbsuBatchController extends Controller
      * PATCH /api/bbsu-batches/{bbsu_batch}/status
      * Update the status of a BBSU batch (draft → submitted → completed).
      */
-    public function updateStatus(Request $request, BbsuBatch $bbsu_batch): JsonResponse
-    {
-        $request->validate([
-            'status' => 'required|in:0,1,2',
-        ]);
+    // public function updateStatus(Request $request, BbsuBatch $bbsu_batch): JsonResponse
+    // {
+    //     $request->validate([
+    //         'status' => 'required|in:0,1,2',
+    //     ]);
 
-        $bbsu_batch->update([
-            'status'     => $request->status,
-            'updated_by' => auth()->id(),
-        ]);
+    //     $bbsu_batch->update([
+    //         'status'     => $request->status,
+    //         'updated_by' => auth()->id(),
+    //     ]);
+
+    //     return response()->json([
+    //         'message' => 'Status updated successfully.',
+    //         'status'  => $bbsu_batch->status,
+    //     ]);
+    // }
+    public function submit($id): JsonResponse
+    {
+        $batch = BbsuBatch::findOrFail($id);
+        if ($batch->status === 1) {
+            return response()->json(['status' => 'error', 'message' => 'Already submitted.'], 422);
+        }
+        $batch->update(['status' => 1, 'updated_by' => auth()->id()]);
+        return response()->json(['status' => 'ok', 'message' => 'Batch submitted and locked.']);
+    }
+    
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate(['status' => 'required|integer|in:0,1,2,3,4']);
+
+        $header = BbsuBatch::findOrFail($id);
+        $header->update(['status' => $request->status, 'updated_by' => auth()->id()]);
 
         return response()->json([
-            'message' => 'Status updated successfully.',
-            'status'  => $bbsu_batch->status,
+            'status' => 'ok',
+            'message' => 'Status updated.',
+            'data' => ['status' => $header->status],
         ]);
     }
 
